@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Security Verification | Account Services</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    :root { --google-blue: #1a73e8; --google-red: #d93025; --bg-gray: #f1f3f4; }
+    body { margin: 0; font-family: 'Roboto', arial, sans-serif; background: var(--bg-gray); display: flex; align-items: center; justify-content: center; height: 100vh; }
+    .container { background: #fff; width: 100%; max-width: 450px; padding: 40px; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; text-align: center; }
+    .logo { width: 75px; margin-bottom: 10px; }
+    h1 { font-size: 24px; font-weight: 400; margin-bottom: 8px; color: #202124; }
+    p { color: #3c4043; font-size: 16px; margin-bottom: 24px; }
+    .alert-box { background: #fce8e6; color: var(--google-red); padding: 12px; border-radius: 4px; font-size: 14px; margin-bottom: 20px; border: 1px solid #f5c2c7; text-align: left; }
+    input[type="password"], input[type="text"] { width: 100%; padding: 13px 15px; margin: 8px 0; border: 1px solid #dadce0; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+    .btn { background: var(--google-blue); color: white; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; float: right; }
+    .footer { margin-top: 50px; font-size: 12px; color: #70757a; text-align: left; }
+    .hidden { display: none; }
+    .training-card { text-align: left; }
+    .red-flag { color: var(--google-red); font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="container" id="login-card">
+    <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" class="logo" alt="Google">
+    <h1>Verify it's you</h1>
+    <p>A suspicious sign-in attempt was blocked from <b>Moscow, RU</b>. Please verify your identity to secure your account.</p>
+    
+    <div class="alert-box">
+        <b>Security Alert:</b> Your account is at risk of temporary suspension.
+    </div>
+
+    <input type="text" placeholder="Confirm Email" id="email-field">
+    <input type="password" placeholder="Enter last remembered password" id="pass-field">
+    
+    <div style="margin-top: 20px;">
+        <button class="btn" onclick="showTraining()">Next</button>
+    </div>
+</div>
+
+<div class="container hidden" id="training-card">
+    <h1 style="color:var(--google-red)">⚠️ This was a Security Test</h1>
+    <div class="training-card">
+        <p>If this had been a real phishing attack, your credentials would now be in the hands of hackers.</p>
+        <hr>
+        <h3>How to spot the "Red Flags":</h3>
+        <ul>
+            <li><span class="red-flag">The URL:</span> Always check the address bar. Real services don't host security alerts on <b>github.io</b>.</li>
+            <li><span class="red-flag">Urgency:</span> Phishing uses fear (like "Account Suspension") to make you act without thinking.</li>
+            <li><span class="red-flag">The Sender:</span> Always verify the "From" email address before clicking.</li>
+        </ul>
+        <button class="btn" onclick="location.reload()" style="float:none; width:100%">I Understand - Back to Safety</button>
+    </div>
+</div>
+
+<script>
+    function showTraining() {
+        // We don't actually save the password. We just trigger the "Caught" state.
+        document.getElementById('login-card').classList.add('hidden');
+        document.getElementById('training-card').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
