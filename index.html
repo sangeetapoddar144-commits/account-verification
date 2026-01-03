@@ -44,7 +44,10 @@ body{
 .alert{color:#fbbc04}
 .danger{color:#d93025;font-weight:600}
 .attempts{color:#ea4335;background:#fce8e6;padding:12px;border-radius:6px;border-left:4px solid #ea4335;margin:10px 0;font-size:14px}
-.critical-warning{background:#fef7e0;border:1px solid #fbbc04;padding:12px;border-radius:6px;margin:10px 0}
+.critical-warning{background:#fef7e0;border:1px solid #fbbc04;padding:12px;border-radius:6px;margin:10px 0;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:0.8; transform:scale(1.02);}}
+.urgent-shake{animation:shake 0.5s infinite}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-3px);}75%{transform:translateX(3px);}}
 button{
   width:100%;
   padding:14px;
@@ -72,52 +75,14 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 .small{font-size:12px;color:#5f6368}
 .doge-banner {
   width: 100%;
-  max-width: 300px;
+  max-width: 280px;
   height: auto;
-  border-radius: 12px;
-  margin: 15px auto;
+  border-radius: 16px;
+  margin: 20px auto;
   display: block;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
-/*----.doge-text {
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 700 !important;
-  font-size: 18px;
-  text-align: center;
-  margin: 10px 0;
-  animation: rainbow 3s linear infinite;
-}
-@keyframes rainbow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-  background-size: 400% 400%;
-}
-.shake{animation:shake .4s linear 2}
-@keyframes shake{
-  25%{transform:translateX(-4px)}
-  50%{transform:translateX(4px)}
-  75%{transform:translateX(-4px)}
-}
-.panic-pulse{animation:pulse 0.8s infinite;}
-@keyframes pulse{
-  0%,100%{opacity:1; transform:scale(1);}
-  50%{opacity:0.7; transform:scale(1.05);}
-}
-#newYearBanner{
-  position: fixed; top: 0; left: 0; right: 0; height: 40px;
-  z-index: 1001; animation: dropIn 0.8s ease-out;
-  box-shadow: 0 6px 25px rgba(0,0,0,.4);
-  background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
-  display: flex; align-items: center; justify-content: center;
-}
-@keyframes dropIn{from{transform: translateY(-100%); opacity: 0;}to{transform: translateY(0); opacity: 1;}}
-.ny-text{text-align: center; font-weight: 700; font-size: 16px; color: #fef3c7; animation: glowText 2.5s ease-in-out infinite; line-height: 1.2;}
-.ny-text span{display: block; font-size: 13px; font-weight: 500; color: #fde68a; margin-top: 2px;}
-@keyframes glowText{0%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}50%{text-shadow: 0 0 14px rgba(253,230,138,.9); transform: scale(1.04);}100%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}}
-@media(max-width:480px){.card{margin:15px; padding:16px;}button{font-size:14px; padding:12px;}} ---- */
+@media(max-width:480px){.card{margin:15px; padding:16px;}button{font-size:14px; padding:12px;}}
 </style>
 </head>
 
@@ -127,24 +92,20 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <span>Google Account Security</span>
 </div>
 
-<div class="hidden" id="newYearBanner">
-  <div class="ny-text">✨ Happy New Year 2026 ✨<br><span>Wishing you and your family joy, health & peace 💛</span></div>
-</div>
-
-<!-- MAIN ALERT WITH PANIC ELEMENTS -->
+<!-- MAIN ALERT -->
 <div class="card" id="main">
   <h2>🚨 CRITICAL SECURITY ALERT</h2>
-  <p class="line danger">We detected <strong id="attemptCount">Loading...</strong> failed sign-in attempts</p>
-  <p class="line danger">Brute-force attack started: <strong id="attackTime">Just now</strong></p>
-  <p class="line danger">Last password change: <strong>Dec 15, 2025</strong> (19 days ago)</p>
+  <p class="line danger">Detected <strong id="attemptCount">Loading...</strong> failed sign-in attempts</p>
+  <p class="line danger">Attack started: <strong id="attackTime">Loading...</strong></p>
+  <p class="line danger">Last password change: <strong id="lastPassChange">Loading...</strong></p>
   <p class="line">Suspicious device: <strong id="device">Detecting...</strong></p>
   <p class="line">Suspicious location: <strong id="region">Detecting...</strong></p>
   <p class="attempts line">
-    🚨 <strong>Mass login attack from multiple IPs</strong><br>
-    Google blocked access but account recovery requested
+    🚨 <strong>Mass brute-force attack detected</strong><br>
+    Multiple IPs attempting account takeover
   </p>
-  <p class="line critical-warning panic-pulse">
-    ⏰ <strong id="urgencyMsg">Verify NOW - 60 seconds remaining</strong>
+  <p class="line critical-warning" id="urgencyMsg">
+    ⏰ Verify NOW - <strong><span id="count">60</span>s</strong> remaining
   </p>
 
   <button id="verifyBtn" class="primary hidden">
@@ -157,7 +118,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <p class="small">Case ID: G-SEC-<span id="ref">Loading...</span></p>
 </div>
 
-<!-- REAL GOOGLE-STYLE QUESTIONS -->
+<!-- QUESTIONS -->
 <div class="card hidden" id="q1">
   <h3>Sign-in Verification</h3>
   <p>Did you authorize login from the flagged device/location?</p>
@@ -184,7 +145,6 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <p>Enter 6-digit code from SMS to your recovery number:</p>
   <input type="text" id="fakeCode" maxlength="6" placeholder="123456" style="width:100%;padding:12px;border:1px solid #dadce0;border-radius:4px;margin:10px 0;font-size:16px;">
   <button onclick="next('q4')" class="primary">✓ VERIFY CODE</button>
-  <p class="small">Code expires in 60s | <a href="#" onclick="next('q4')">Resend SMS</a></p>
 </div>
 
 <div class="card hidden" id="q4">
@@ -195,33 +155,31 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <button onclick="reveal('Chocolate 🍫')">Chocolate 🍫</button>
 </div>
 
-<!-- LOCKED SCREEN -->
+<!-- LOCKED -->
 <div class="card hidden" id="locked">
-  <h2 class="danger">🔒 Account Locked - High Risk Detected</h2>
-  <p>Verification timeout. Advanced security measures activated.</p>
+  <h2 class="danger">🔒 Account Locked - High Risk</h2>
+  <p>Verification timeout. Security measures activated.</p>
   <button class="primary" onclick="recover()">🔓 Emergency Recovery</button>
 </div>
 
-<!-- FINAL REVEAL WITH DOGE + RAINBOW WISHES -->
-<div class="card hidden" id="final">
-  <h2>🎉 GOTCHA!!!</h2>
-  <img src="./Doge_hnyWish.png" alt="Doge HNY" class="doge-banner">
-  <p class="doge-text">🐶 SUCH WOW! HAPPY NEW YEAR 2026 🐕</p>
-  <p class="doge-text">MUCH LOVE FROM SANGEETA 💛✨</p>
-  <p id="finalMsg"></p>
-  <p>— With love,<br><strong>Sangeeta</strong> 💛🐶</p>
+<!-- CLEAN FINAL REVEAL - DOGE ONLY -->
+<div class="card hidden" id="final" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none;">
+  <h2 style="color:#ffd700; text-align:center;">🎉 GOTCHA!!!</h2>
+  <img src="./Doge_hnyWish.png" alt="Doge HNY Wish" class="doge-banner">
+  <p style="text-align:center; font-size:18px; font-weight:700; color:#ffd700; margin:10px 0;">
+    Your Doge wishes you Happy New Year 2026! 🐶✨
+  </p>
+  <p id="finalMsg" style="line-height:1.6;"></p>
+  <p style="font-size:14px; opacity:0.9;">Made with love by Sangeeta 💛</p>
 </div>
 
 <script>
-// REALISTIC DEVICE DETECTION
+// DYNAMIC DATA - CHANGES EVERY LOAD
 function getRealDevice() {
   const ua = navigator.userAgent.toLowerCase();
   if (ua.includes('android')) {
-    if (ua.includes('pixel')) return 'Google Pixel 9 Pro';
-    if (ua.includes('samsung')) return 'Samsung Galaxy S24 Ultra';
-    if (ua.includes('oneplus')) return 'OnePlus 13';
-    if (ua.includes('xiaomi')) return 'Xiaomi 15 Pro';
-    return 'Samsung Galaxy A55';
+    const devices = ['Samsung Galaxy S24 Ultra', 'Google Pixel 9 Pro', 'OnePlus 13', 'Xiaomi 15 Pro', 'Samsung Galaxy A55'];
+    return devices[Math.floor(Math.random()*devices.length)];
   }
   if (ua.includes('iphone')) return 'iPhone 16 Pro Max';
   if (ua.includes('windows')) return 'Chrome on Windows 11';
@@ -229,8 +187,9 @@ function getRealDevice() {
   return 'Google Chrome Browser';
 }
 
-const locations = ['New York City, NY, USA', 'London, UK', 'Toronto, Canada', 'Sydney, Australia', 'Mumbai, Maharashtra, IN', 'Delhi, India', 'Singapore', 'Dubai, UAE'];
-const attackTimes = ['23s ago', '1min ago', '2min ago', '47s ago'];
+const locations = ['New York City, NY, USA', 'London, UK', 'Toronto, Canada', 'Sydney, Australia', 'Singapore', 'Dubai, UAE', 'Berlin, Germany'];
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const daysAgo = [12, 19, 25, 31, 8, 15, 22];
 
 const elements = {
   device: document.getElementById("device"),
@@ -238,32 +197,33 @@ const elements = {
   ref: document.getElementById("ref"),
   attemptCount: document.getElementById("attemptCount"),
   attackTime: document.getElementById("attackTime"),
+  lastPassChange: document.getElementById("lastPassChange"),
   count: document.getElementById("count"),
   main: document.getElementById("main"),
   verifyBtn: document.getElementById("verifyBtn"),
   reviewBtn: document.getElementById("reviewBtn"),
-  final: document.getElementById("final"),
-  finalMsg: document.getElementById("finalMsg"),
-  locked: document.getElementById("locked"),
   urgencyMsg: document.getElementById("urgencyMsg")
 };
 
-// SET DYNAMIC VALUES
+// SET DYNAMIC VALUES ON LOAD
 elements.device.textContent = getRealDevice();
 elements.region.textContent = locations[Math.floor(Math.random() * locations.length)];
 elements.ref.textContent = 'SEC' + Date.now().toString().slice(-6);
-elements.attemptCount.textContent = (300 + Math.floor(Math.random() * 700)).toLocaleString();
-elements.attackTime.textContent = attackTimes[Math.floor(Math.random() * attackTimes.length)];
+elements.attemptCount.textContent = (350 + Math.floor(Math.random() * 650)).toLocaleString();
+elements.attackTime.textContent = ['23s ago', '1min ago', '2min ago'][Math.floor(Math.random()*3)];
+const month = months[Math.floor(Math.random()*12)];
+const dayAgo = daysAgo[Math.floor(Math.random()*daysAgo.length)];
+elements.lastPassChange.textContent = `${month} ${15+Math.floor(Math.random()*15)}, 2025 (${dayAgo} days ago)`;
 
-// PANIC ESCALATION SYSTEM
-let panicLevel = 0;
+// COUNTDOWN + PANIC SYSTEM
 let t = 60;
-const urgencyMessages = [
+let panicLevel = 0;
+const panicMessages = [
   'Verify NOW - 60 seconds remaining',
-  '⚠️ URGENT - 45 seconds left',
+  '⚠️ URGENT - 45 seconds left', 
   '🚨 CRITICAL - 30 seconds remaining',
   '⏳ FINAL WARNING - 15 seconds',
-  '🔴 IMMEDIATE ACTION REQUIRED'
+  '🔴 LOCK IMMINENT - ACT NOW'
 ];
 
 document.querySelectorAll('.line').forEach((l,i)=>setTimeout(()=>l.style.opacity=1, i*600));
@@ -271,57 +231,52 @@ document.querySelectorAll('.line').forEach((l,i)=>setTimeout(()=>l.style.opacity
 const panicTimer = setInterval(() => {
   t--;
   elements.count.textContent = t;
-  elements.urgencyMsg.textContent = urgencyMessages[Math.min(panicLevel, urgencyMessages.length-1)];
+  panicLevel = Math.min(Math.floor((60-t)/12), 4);
+  elements.urgencyMsg.innerHTML = `⏰ ${panicMessages[panicLevel]} - <strong>${t}s</strong>`;
   
-  if (t <= 45) panicLevel = 1;
-  if (t <= 30) { panicLevel = 2; elements.main.classList.add('shake'); }
-  if (t <= 15) { 
-    panicLevel = 3; 
-    elements.main.classList.add('panic-pulse');
+  // ESCALATING PANIC EFFECTS
+  if (t <= 45) elements.main.style.borderColor = '#fbbc04';
+  if (t <= 30) { 
+    elements.main.classList.add('urgent-shake');
     navigator.vibrate([200,100,200]);
   }
-  if (t <= 5) {
-    panicLevel = 4;
-    elements.main.innerHTML += '<div class="critical-warning">🚨 ACCOUNT LOCK IMMINENT - CLICK NOW</div>';
-    navigator.vibrate(500);
+  if (t <= 15) {
+    elements.urgencyMsg.style.background = '#fee';
+    navigator.vibrate([300,150,300]);
   }
-  
+  if (t <= 5) {
+    elements.main.innerHTML += '<p class="critical-warning" style="background:red;color:white;">🚨 ACCOUNT LOCK IN ' + t + 's - CLICK NOW!</p>';
+    navigator.vibrate(800);
+  }
   if (t === 0) {
     clearInterval(panicTimer);
     elements.main.classList.add('hidden');
-    elements.locked.classList.remove('hidden');
-    navigator.vibrate([500,200,500]);
+    document.getElementById('locked').classList.remove('hidden');
   }
 }, 1000);
 
-// AUDIO + VIBRATION
+// AUDIO
 let beep = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA');
 beep.volume = 0.7;
 let bgMusic = new Audio("./chatur.mp3");
 bgMusic.volume = 0.4;
 bgMusic.loop = true;
 
-setTimeout(()=>{
+setTimeout(()=> {
   elements.verifyBtn.classList.remove('hidden');
   beep.play().catch(()=>{});
   navigator.vibrate([200,100,200]);
 }, 5000);
 
-setTimeout(()=>{
+setTimeout(()=> {
   elements.verifyBtn.disabled = true;
   elements.verifyBtn.textContent = "VERIFICATION TIMEOUT";
   elements.reviewBtn.classList.remove('hidden');
-  navigator.vibrate([400,200,400]);
-}, 10000);
-
-function alertUser(pattern) {
-  beep.currentTime = 0; beep.play().catch(()=>{});
-  if(navigator.vibrate) navigator.vibrate(pattern);
-}
+}, 11000);
 
 function startQuestions(){
   clearInterval(panicTimer);
-  elements.main.classList.remove('shake', 'panic-pulse');
+  elements.main.classList.remove('urgent-shake');
   elements.main.classList.add('hidden');
   document.getElementById('q1').classList.remove('hidden');
 }
@@ -342,22 +297,21 @@ function recover(){
 function reveal(food){
   const active = document.querySelector('.card:not(.hidden)');
   if(active) active.classList.add('hidden');
-  document.getElementById('googleHeader').classList.add('hidden');
-  document.getElementById('newYearBanner').classList.remove('hidden');
+  document.getElementById('googleHeader').style.display = 'none';
   document.body.style.paddingTop = "0";
-  document.body.style.background = "radial-gradient(circle at top, #1a202c, #000)";
   
   document.getElementById("finalMsg").innerHTML = `
-  Take a deep breath — no alerts, no tracking, just New Year mischief! 😊<br><br>
-  <span style="color:#4cceac;font-weight:bold;">YOU'RE SAFE:</span><br>
-  Real connections don't need passwords. They need trust. 💛<br><br>
-  Wishing you endless <strong>${food}</strong> and epic 2026 adventures! 🥳<br><br>
-  🔐 Real security check: <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">myaccount.google.com/security</a>
+  No alerts, no tracking—just New Year mischief! 😊<br><br>
+  <span style="color:#4cceac;">YOU'RE SAFE:</span><br>
+  Real connections don't need passwords, just trust. 💛<br><br>
+  Enjoy your <strong>${food}</strong> and epic 2026 adventures! 🥳<br><br>
+  🔐 Real security: <a href="https://myaccount.google.com/security" target="_blank" style="color:#ffd700;">myaccount.google.com/security</a>
   `;
   document.getElementById('final').classList.remove('hidden');
 }
 
-elements.verifyBtn.onclick = elements.reviewBtn.onclick = startQuestions;
+document.getElementById('verifyBtn').onclick = 
+document.getElementById('reviewBtn').onclick = startQuestions;
 
 if (screen.width < 768) setTimeout(()=>document.documentElement.requestFullscreen().catch(()=>{}), 7000);
 </script>
