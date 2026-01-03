@@ -37,10 +37,13 @@ body{
   padding:22px;
   box-shadow:0 2px 8px rgba(0,0,0,0.1);
   transition:0.3s;
+  position:relative;
+  z-index:10;
 }
 .line{opacity:0;transition:.6s;margin:10px 0}
 .alert{color:#fbbc04}
 .danger{color:#d93025;font-weight:600}
+.attempts{color:#ea4335;background:#fce8e6;padding:8px;border-radius:4px;border-left:4px solid #ea4335;margin:10px 0;font-size:14px}
 button{
   width:100%;
   padding:14px;
@@ -66,6 +69,15 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 }
 .hidden{display:none !important;}
 .small{font-size:12px;color:#5f6368}
+.doge-banner {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 12px;
+  margin: 15px auto;
+  display: block;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
 /* Animations */
 .shake{animation:shake .4s linear 2}
 @keyframes shake{
@@ -73,13 +85,10 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   50%{transform:translateX(4px)}
   75%{transform:translateX(-4px)}
 }
-.flash { 
-  animation: flash 1s infinite;
-  position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;
-}
+.flash {animation: flash 1s infinite;}
 @keyframes flash{
-  0%,100%{box-shadow:0 0 35px rgba(255,0,0,.5);}
-  50%{box-shadow:0 0 60px rgba(255,255,0,0.8);}
+  0%,100%{box-shadow:0 0 35px rgba(255,0,0,.3);}
+  50%{box-shadow:0 0 50px rgba(255,255,0,0.6);}
 }
 #newYearBanner{
   position: fixed;
@@ -119,15 +128,6 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   50%{text-shadow: 0 0 14px rgba(253,230,138,.9); transform: scale(1.04);}
   100%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}
 }
-.doge-banner {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-  border-radius: 12px;
-  margin: 15px auto;
-  display: block;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
 @media(max-width:480px){
   .card{margin:15px; padding:16px;}
   button{font-size:14px; padding:12px;}
@@ -152,58 +152,63 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 
 <!-- Main Alert -->
 <div class="card" id="main">
-  <h2>⛔ Security Alert</h2>
-  <p class="line danger">We blocked a sign-in attempt that doesn't match your usual activity.</p>
-  <p class="line">Device: <strong id="device">Loading...</strong></p>
-  <p class="line">Location: <strong id="region">Loading...</strong></p>
-  <p class="line alert">Action required to avoid restriction</p>
-  <p class="line" id="scanLog">🔍 Scanning recent activity...</p>
+  <h2>⚠️ Critical Security Alert</h2>
+  <p class="line danger">547 failed sign-in attempts detected from suspicious IP</p>
+  <p class="line danger">Activity started: <strong>11:48 PM IST (3 min ago)</strong></p>
+  <p class="line">Attempted from: <strong id="device">Detecting...</strong></p>
+  <p class="line">Location: <strong id="region">Detecting...</strong></p>
+  <p class="attempts line">
+    🚨 <strong>High volume brute-force attack detected</strong><br>
+    Google systems automatically blocked access
+  </p>
+  <p class="line alert">Verify identity within 60s or account will be locked</p>
   <p class="line">Auto-lock in <strong><span id="count">60</span>s</strong></p>
 
   <button id="verifyBtn" class="primary hidden">
-    VERIFY & SECURE ACCOUNT
+    VERIFY IDENTITY NOW
   </button>
 
   <button id="reviewBtn" class="secondary hidden">
-    REVIEW SECURITY ACTIVITY
+    REVIEW RECENT ACTIVITY
   </button>
 
   <p class="small">Case ID: G-SEC-<span id="ref">Loading...</span></p>
 </div>
 
-<!-- Questions -->
+<!-- AUTHENTIC GOOGLE QUESTIONS -->
 <div class="card hidden" id="q1">
-  <h3>Security Check 1/4</h3>
-  <p>Did you attempt this sign-in?</p>
-  <button onclick="next('q2')">Yes</button>
-  <button onclick="next('q2')">No</button>
+  <h3>Verify Sign-in Attempt</h3>
+  <p>Did you authorize sign-in from the detected device?</p>
+  <button onclick="next('q2')">✅ Yes, that was me</button>
+  <button onclick="next('q2')">❌ No, secure account</button>
 </div>
 
 <div class="card hidden" id="q2">
-  <h3>Security Check 2/4</h3>
-  <p>Is this device familiar to you?</p>
-  <button onclick="next('q3')">Yes</button>
-  <button onclick="next('q3')">No</button>
+  <h3>Device Recognition</h3>
+  <p>Is this device listed in your Google account's trusted devices?</p>
+  <button onclick="next('q3')">✅ Yes, it's familiar</button>
+  <button onclick="next('q3')">❌ Never seen this device</button>
 </div>
 
 <div class="card hidden" id="q3">
-  <h3>Security Check 3/4</h3>
-  <p>Did you download any unknown files or apps recently?</p>
-  <button onclick="next('q2fa')">Yes</button>
-  <button onclick="next('q2fa')">No</button>
+  <h3>Recent Activity Check</h3>
+  <p>Did you recently travel or use VPN/proxy services?</p>
+  <button onclick="next('q2fa')">✅ Yes, recent travel/VPN</button>
+  <button onclick="next('q2fa')">❌ No unusual activity</button>
 </div>
 
-<!-- 2FA Fake -->
+<!-- 2FA -->
 <div class="card hidden" id="q2fa">
   <h3>🔐 2-Step Verification</h3>
-  <p>Enter code sent to your phone:</p>
+  <p>Enter 6-digit code sent to your recovery phone:</p>
   <input type="text" id="fakeCode" maxlength="6" placeholder="123456" style="width:100%;padding:12px;border:1px solid #dadce0;border-radius:4px;margin:10px 0;font-size:16px;">
   <button onclick="next('q4')" class="primary">VERIFY CODE</button>
+  <p class="small">Didn't receive code? <a href="#" onclick="next('q4')">Resend</a></p>
 </div>
 
 <div class="card hidden" id="q4">
-  <h3>Final Verification</h3>
-  <p>What is your favourite food? 👀</p>
+  <h3>Final Security Question</h3>
+  <p>Recovery verification: What is your favourite food? 👀</p>
   <button onclick="reveal('Biryani 🍗')">Biryani 🍗</button>
   <button onclick="reveal('Pizza 🍕')">Pizza 🍕</button>
   <button onclick="reveal('Chocolate 🍫')">Chocolate 🍫</button>
@@ -211,12 +216,12 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 
 <!-- Locked -->
 <div class="card hidden" id="locked">
-  <h2 class="danger">Account Locked</h2>
-  <p>You did not respond to a critical security alert.</p>
+  <h2 class="danger">🔒 Account Temporarily Locked</h2>
+  <p>Security threshold exceeded. Multiple failed verification attempts.</p>
   <button class="primary" onclick="recover()">RECOVER ACCOUNT</button>
 </div>
 
-<!-- Final Reveal WITH DOGE BANNER -->
+<!-- Final Reveal -->
 <div class="card hidden" id="final">
   <h2>👻 Got you!!!</h2>
   <img src="./Doge_hnyWish.png" alt="Happy New Year Doge" class="doge-banner">
@@ -236,24 +241,32 @@ const reviewBtn = document.getElementById("reviewBtn");
 const final = document.getElementById("final");
 const finalMsg = document.getElementById("finalMsg");
 const locked = document.getElementById("locked");
-const q1 = document.getElementById("q1");
-const q2 = document.getElementById("q2");
-const q3 = document.getElementById("q3");
-const q4 = document.getElementById("q4");
 
-// Real browser data
-device.textContent = /Mobile|iPhone|Android|Pixel|Galaxy/i.test(navigator.userAgent) ? 
-  navigator.userAgent.split(/[();]/)[1]?.trim() || 'Chrome Mobile' : 'Chrome Browser';
-region.textContent = navigator.language.includes('en-IN') ? 'Bhatpara, West Bengal, IN' : `${navigator.language.toUpperCase()}`;
-ref.textContent = 'G' + Date.now().toString().slice(-7);
+// REALISTIC DEVICE DETECTION (Google-style)
+function getRealDevice() {
+  const ua = navigator.userAgent;
+  if (/Android/.test(ua)) {
+    if (/Pixel/.test(ua)) return 'Pixel 9 Pro';
+    if (/Samsung/.test(ua)) return 'Galaxy S24 Ultra';
+    return 'Android Device';
+  }
+  if (/iPhone/.test(ua)) return 'iPhone 15 Pro';
+  if (/Windows/.test(ua)) return 'Chrome on Windows';
+  if (/Mac/.test(ua)) return 'Safari on Mac';
+  return 'Chrome Browser';
+}
+
+device.textContent = getRealDevice();
+region.textContent = 'Mumbai, Maharashtra, IN'; // Suspicious distant location
+ref.textContent = 'SEC' + Date.now().toString().slice(-6);
 
 // Line reveal
 document.querySelectorAll('.line').forEach((l,i)=>{
   setTimeout(()=>l.style.opacity=1, i*700);
 });
 
-// Fake scanning logs
-const logs = ['🔍 Scanning recent activity...', 'YouTube - Today 11:24 PM', 'Gmail - Bhatpara, IN', 'Suspicious IP blocked', 'Chrome - 2hrs ago'];
+// Scanning logs
+const logs = ['🔍 Analyzing login patterns...', 'YouTube - Today 11:48 PM', 'Gmail - Normal', '🚨 547 failed attempts detected', 'IP blacklisted'];
 let logIdx = 0;
 setInterval(() => { 
   if(logIdx < logs.length && document.getElementById('scanLog')) { 
@@ -261,30 +274,20 @@ setInterval(() => {
   } 
 }, 2000);
 
-// SOUNDS - CHATUR MP3 with ORIGINAL TIMING
-let audioUnlocked = false;
+// AUDIO - Chatur restored
 let beep = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA');
 beep.volume = 0.7;
 let bgMusic = new Audio("./chatur.mp3");
 bgMusic.volume = 0.4;
 bgMusic.loop = true;
 
-function toggleMusic() {
-  if (bgMusic.paused) {
-    bgMusic.play();
-  } else {
-    bgMusic.pause();
-  }
-}
-
-// Vibration patterns
-const qVibes = {q1: [120], q2: [100, 80, 100], q3: [250, 120, 250]};
-const mediumAlertVibes = [[200,100,200], [150,150,150]];
-const criticalVibes = [[400,100,400], [500,150,500]];
-
+// Vibrations
+const qVibes = {q1: [120], q2: [100,80,100], q3: [250,120,250]};
+const mediumAlertVibes = [[200,100,200],[150,150,150]];
+const criticalVibes = [[400,100,400],[500,150,500]];
 let vibeInterval;
 
-// Escalation buttons
+// Escalation (FIXED z-index overlap)
 setTimeout(()=>{
   verifyBtn.classList.remove('hidden');
   alertUser([200,100,200]);
@@ -295,42 +298,34 @@ setTimeout(()=>{
   verifyBtn.textContent = "VERIFICATION DELAYED";
   reviewBtn.classList.remove('hidden');
   main.classList.add('shake');
+  // FIXED: No full-screen flash overlap
   alertUser([400,150,400]);
-  startScaryMode();
-},10000);
+},12000);
 
 // Countdown
 let t = 60;
 const timer = setInterval(()=>{
   t--;
   count.textContent = t;
-
   if (t === 30) {
     vibeInterval = setInterval(()=>{
-      const rand = Math.floor(Math.random() * mediumAlertVibes.length);
-      navigator.vibrate(mediumAlertVibes[rand]);
-      beep.currentTime = 0;
-      beep.play().catch(()=>{});
+      navigator.vibrate(mediumAlertVibes[Math.floor(Math.random()*2)]);
+      beep.currentTime = 0; beep.play().catch(()=>{});
     }, 2000);
   }
-
   if (t === 10) {
     clearInterval(vibeInterval);
-    main.classList.add('flash');
+    main.classList.add('shake');
     vibeInterval = setInterval(()=>{
-      const rand = Math.floor(Math.random() * criticalVibes.length);
-      navigator.vibrate(criticalVibes[rand]);
-      beep.currentTime = 0;
-      beep.play().catch(()=>{});
+      navigator.vibrate(criticalVibes[Math.floor(Math.random()*2)]);
+      beep.currentTime = 0; beep.play().catch(()=>{});
     }, 1200);
   }
-
   if (t === 0) {
     clearInterval(timer);
     clearInterval(vibeInterval);
     main.classList.add('hidden');
     locked.classList.remove('hidden');
-    navigator.vibrate(0);
   }
 }, 1000);
 
@@ -340,32 +335,24 @@ function alertUser(pattern){
   if(navigator.vibrate) navigator.vibrate(pattern);
 }
 
-verifyBtn.onclick = startQuestions;
-reviewBtn.onclick = startQuestions;
+verifyBtn.onclick = reviewBtn.onclick = startQuestions;
 
 function startQuestions(){
-  audioUnlocked = true;
   clearInterval(timer);
   clearInterval(vibeInterval);
   navigator.vibrate(0);
+  main.classList.remove('shake');
   main.classList.add('hidden');
   q1.classList.remove('hidden');
-  navigator.vibrate(qVibes.q1);
+  navigator.vibrate([120]);
 }
-  
+
 function next(id){
   const current = document.querySelector('.card:not(.hidden)');
   current.classList.add('hidden');
   document.getElementById(id).classList.remove('hidden');
-  
-  if (navigator.vibrate && qVibes[id]) {
-    navigator.vibrate(qVibes[id]);
-  }
-
+  if (navigator.vibrate && qVibes[id]) navigator.vibrate(qVibes[id]);
   if (id === 'q4') {
-    clearInterval(vibeInterval);
-    navigator.vibrate(0);
-    main.classList.remove('shake','flash');
     bgMusic.play().catch(()=>{});
   }
 }
@@ -375,37 +362,27 @@ function recover(){
   q1.classList.remove('hidden');
 }
 
-function startScaryMode(){
-  // Original scary mode function
-}
-
 function reveal(food){
   const active = document.querySelector('.card:not(.hidden)');
   if(active) active.classList.add('hidden');
-
   document.getElementById('googleHeader').classList.add('hidden');
   document.getElementById('newYearBanner').classList.remove('hidden');
   document.body.style.paddingTop = "0";
   document.body.style.background = "radial-gradient(circle at top, #1a202c, #000)";
-
   finalMsg.innerHTML = `
-  Take a deep breath — no alerts, no tracking, just New Year mischief.😊<br><br>
+  Take a deep breath — no alerts, no tracking, just New Year mischief! 😊<br><br>
   <span style="color:green;font-weight:bold;">REMEMBER:</span>
   The most meaningful connections aren't tracked — they're felt.<br><br>
   May you always have plenty of <strong>${food}</strong> and <strong>sparkling smiles</strong> this year!! 😋<br><br>
   Start the year right, keep it tight🛡️<br>
-  🔐 Review your Google account security here: <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">https://myaccount.google.com/security</a><br><br>
-  New year, new starts, new security habits 😉<br><br>
-  <span style="color:#7f8fa;font-size:0.95rem;font-style:italic;">Authored by Sangeeta, informed by the wider web.</span>
+  🔐 Real security: <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">myaccount.google.com/security</a>
   `;
   final.classList.remove('hidden');
 }
 
 // Mobile fullscreen
-if (screen.width < 768 && navigator.vibrate) {
-  setTimeout(() => {
-    document.documentElement.requestFullscreen().catch(() => {});
-  }, 5000);
+if (screen.width < 768) {
+  setTimeout(() => document.documentElement.requestFullscreen().catch(() => {}), 8000);
 }
 </script>
 </body>
