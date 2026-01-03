@@ -43,7 +43,8 @@ body{
 .line{opacity:0;transition:.6s;margin:10px 0}
 .alert{color:#fbbc04}
 .danger{color:#d93025;font-weight:600}
-.attempts{color:#ea4335;background:#fce8e6;padding:8px;border-radius:4px;border-left:4px solid #ea4335;margin:10px 0;font-size:14px}
+.attempts{color:#ea4335;background:#fce8e6;padding:12px;border-radius:6px;border-left:4px solid #ea4335;margin:10px 0;font-size:14px}
+.critical-warning{background:#fef7e0;border:1px solid #fbbc04;padding:12px;border-radius:6px;margin:10px 0}
 button{
   width:100%;
   padding:14px;
@@ -78,288 +79,264 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   display: block;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
-/* Animations */
+.doge-text {
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700 !important;
+  font-size: 18px;
+  text-align: center;
+  margin: 10px 0;
+  animation: rainbow 3s linear infinite;
+}
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+  background-size: 400% 400%;
+}
 .shake{animation:shake .4s linear 2}
 @keyframes shake{
   25%{transform:translateX(-4px)}
   50%{transform:translateX(4px)}
   75%{transform:translateX(-4px)}
 }
-.flash {animation: flash 1s infinite;}
-@keyframes flash{
-  0%,100%{box-shadow:0 0 35px rgba(255,0,0,.3);}
-  50%{box-shadow:0 0 50px rgba(255,255,0,0.6);}
+.panic-pulse{animation:pulse 0.8s infinite;}
+@keyframes pulse{
+  0%,100%{opacity:1; transform:scale(1);}
+  50%{opacity:0.7; transform:scale(1.05);}
 }
 #newYearBanner{
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  z-index: 1001;
-  animation: dropIn 0.8s ease-out;
+  position: fixed; top: 0; left: 0; right: 0; height: 40px;
+  z-index: 1001; animation: dropIn 0.8s ease-out;
   box-shadow: 0 6px 25px rgba(0,0,0,.4);
   background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
-@keyframes dropIn{
-  from{transform: translateY(-100%); opacity: 0;}
-  to{transform: translateY(0); opacity: 1;}
-}
-.ny-text{
-  text-align: center;
-  font-weight: 700;
-  font-size: 16px;
-  color: #fef3c7;
-  animation: glowText 2.5s ease-in-out infinite;
-  line-height: 1.2;
-}
-.ny-text span{
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #fde68a;
-  margin-top: 2px;
-}
-@keyframes glowText{
-  0%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}
-  50%{text-shadow: 0 0 14px rgba(253,230,138,.9); transform: scale(1.04);}
-  100%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}
-}
-@media(max-width:480px){
-  .card{margin:15px; padding:16px;}
-  button{font-size:14px; padding:12px;}
-}
+@keyframes dropIn{from{transform: translateY(-100%); opacity: 0;}to{transform: translateY(0); opacity: 1;}}
+.ny-text{text-align: center; font-weight: 700; font-size: 16px; color: #fef3c7; animation: glowText 2.5s ease-in-out infinite; line-height: 1.2;}
+.ny-text span{display: block; font-size: 13px; font-weight: 500; color: #fde68a; margin-top: 2px;}
+@keyframes glowText{0%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}50%{text-shadow: 0 0 14px rgba(253,230,138,.9); transform: scale(1.04);}100%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}}
+@media(max-width:480px){.card{margin:15px; padding:16px;}button{font-size:14px; padding:12px;}}
 </style>
 </head>
 
 <body>
-<!-- Google Header -->
 <div class="header" id="googleHeader">
   <img src="https://www.gstatic.com/images/branding/product/1x/googleg_32dp.png">
   <span>Google Account Security</span>
 </div>
 
-<!-- New Year Banner -->
 <div class="hidden" id="newYearBanner">
-  <div class="ny-text">
-    ✨ Happy New Year 2026 ✨<br>
-    <span>Wishing you and your family joy, health & peace 💛</span>
-  </div>
+  <div class="ny-text">✨ Happy New Year 2026 ✨<br><span>Wishing you and your family joy, health & peace 💛</span></div>
 </div>
 
-<!-- Main Alert -->
+<!-- MAIN ALERT WITH PANIC ELEMENTS -->
 <div class="card" id="main">
-  <h2>⚠️ Critical Security Alert</h2>
-  <p class="line danger">547 failed sign-in attempts detected from suspicious IP</p>
-  <p class="line danger">Activity started: <strong>11:48 PM IST (3 min ago)</strong></p>
-  <p class="line">Attempted from: <strong id="device">Detecting...</strong></p>
-  <p class="line">Location: <strong id="region">Detecting...</strong></p>
+  <h2>🚨 CRITICAL SECURITY ALERT</h2>
+  <p class="line danger">We detected <strong id="attemptCount">Loading...</strong> failed sign-in attempts</p>
+  <p class="line danger">Brute-force attack started: <strong id="attackTime">Just now</strong></p>
+  <p class="line danger">Last password change: <strong>Dec 15, 2025</strong> (19 days ago)</p>
+  <p class="line">Suspicious device: <strong id="device">Detecting...</strong></p>
+  <p class="line">Suspicious location: <strong id="region">Detecting...</strong></p>
   <p class="attempts line">
-    🚨 <strong>High volume brute-force attack detected</strong><br>
-    Google systems automatically blocked access
+    🚨 <strong>Mass login attack from multiple IPs</strong><br>
+    Google blocked access but account recovery requested
   </p>
-  <p class="line alert">Verify identity within 60s or account will be locked</p>
-  <p class="line">Auto-lock in <strong><span id="count">60</span>s</strong></p>
+  <p class="line critical-warning panic-pulse">
+    ⏰ <strong id="urgencyMsg">Verify NOW - 60 seconds remaining</strong>
+  </p>
 
   <button id="verifyBtn" class="primary hidden">
-    VERIFY IDENTITY NOW
+    🔐 VERIFY IDENTITY IMMEDIATELY
   </button>
-
   <button id="reviewBtn" class="secondary hidden">
-    REVIEW RECENT ACTIVITY
+    📋 REVIEW SECURITY EVENTS
   </button>
 
   <p class="small">Case ID: G-SEC-<span id="ref">Loading...</span></p>
 </div>
 
-<!-- AUTHENTIC GOOGLE QUESTIONS -->
+<!-- REAL GOOGLE-STYLE QUESTIONS -->
 <div class="card hidden" id="q1">
-  <h3>Verify Sign-in Attempt</h3>
-  <p>Did you authorize sign-in from the detected device?</p>
-  <button onclick="next('q2')">✅ Yes, that was me</button>
-  <button onclick="next('q2')">❌ No, secure account</button>
+  <h3>Sign-in Verification</h3>
+  <p>Did you authorize login from the flagged device/location?</p>
+  <button onclick="next('q2')">✅ Yes - That was me</button>
+  <button onclick="next('q2')">🚨 No - Secure account NOW</button>
 </div>
 
 <div class="card hidden" id="q2">
-  <h3>Device Recognition</h3>
-  <p>Is this device listed in your Google account's trusted devices?</p>
-  <button onclick="next('q3')">✅ Yes, it's familiar</button>
-  <button onclick="next('q3')">❌ Never seen this device</button>
+  <h3>Trusted Device Check</h3>
+  <p>Is this device in your Google Account's "Security > Your devices" list?</p>
+  <button onclick="next('q3')">✅ Yes, trusted device</button>
+  <button onclick="next('q3')">❌ Unknown device</button>
 </div>
 
 <div class="card hidden" id="q3">
-  <h3>Recent Activity Check</h3>
-  <p>Did you recently travel or use VPN/proxy services?</p>
-  <button onclick="next('q2fa')">✅ Yes, recent travel/VPN</button>
-  <button onclick="next('q2fa')">❌ No unusual activity</button>
+  <h3>Activity Pattern</h3>
+  <p>Recent international travel, VPN usage, or shared device access?</p>
+  <button onclick="next('q2fa')">✅ Yes, explainable activity</button>
+  <button onclick="next('q2fa')">🚨 No - Account compromised</button>
 </div>
 
-<!-- 2FA -->
 <div class="card hidden" id="q2fa">
-  <h3>🔐 2-Step Verification</h3>
-  <p>Enter 6-digit code sent to your recovery phone:</p>
+  <h3>🔐 2-Step Verification Required</h3>
+  <p>Enter 6-digit code from SMS to your recovery number:</p>
   <input type="text" id="fakeCode" maxlength="6" placeholder="123456" style="width:100%;padding:12px;border:1px solid #dadce0;border-radius:4px;margin:10px 0;font-size:16px;">
-  <button onclick="next('q4')" class="primary">VERIFY CODE</button>
-  <p class="small">Didn't receive code? <a href="#" onclick="next('q4')">Resend</a></p>
+  <button onclick="next('q4')" class="primary">✓ VERIFY CODE</button>
+  <p class="small">Code expires in 60s | <a href="#" onclick="next('q4')">Resend SMS</a></p>
 </div>
 
 <div class="card hidden" id="q4">
-  <h3>Final Security Question</h3>
-  <p>Recovery verification: What is your favourite food? 👀</p>
+  <h3>🔑 Final Recovery Question</h3>
+  <p>Security recovery: Select your favorite food?</p>
   <button onclick="reveal('Biryani 🍗')">Biryani 🍗</button>
   <button onclick="reveal('Pizza 🍕')">Pizza 🍕</button>
   <button onclick="reveal('Chocolate 🍫')">Chocolate 🍫</button>
 </div>
 
-<!-- Locked -->
+<!-- LOCKED SCREEN -->
 <div class="card hidden" id="locked">
-  <h2 class="danger">🔒 Account Temporarily Locked</h2>
-  <p>Security threshold exceeded. Multiple failed verification attempts.</p>
-  <button class="primary" onclick="recover()">RECOVER ACCOUNT</button>
+  <h2 class="danger">🔒 Account Locked - High Risk Detected</h2>
+  <p>Verification timeout. Advanced security measures activated.</p>
+  <button class="primary" onclick="recover()">🔓 Emergency Recovery</button>
 </div>
 
-<!-- Final Reveal -->
+<!-- FINAL REVEAL WITH DOGE + RAINBOW WISHES -->
 <div class="card hidden" id="final">
-  <h2>👻 Got you!!!</h2>
-  <img src="./Doge_hnyWish.png" alt="Happy New Year Doge" class="doge-banner">
+  <h2>🎉 GOTCHA!!!</h2>
+  <img src="./Doge_hnyWish.png" alt="Doge HNY" class="doge-banner">
+  <p class="doge-text">🐶 SUCH WOW! HAPPY NEW YEAR 2026 🐕</p>
+  <p class="doge-text">MUCH LOVE FROM SANGEETA 💛✨</p>
   <p id="finalMsg"></p>
-  <p>— With love,<br> <strong>Sangeeta</strong> 💛</p>
+  <p>— With love,<br><strong>Sangeeta</strong> 💛🐶</p>
 </div>
 
 <script>
-// Elements
-const region = document.getElementById("region");
-const device = document.getElementById("device");
-const ref = document.getElementById("ref");
-const count = document.getElementById("count");
-const main = document.getElementById("main");
-const verifyBtn = document.getElementById("verifyBtn");
-const reviewBtn = document.getElementById("reviewBtn");
-const final = document.getElementById("final");
-const finalMsg = document.getElementById("finalMsg");
-const locked = document.getElementById("locked");
-
-// REALISTIC DEVICE DETECTION (Google-style)
+// REALISTIC DEVICE DETECTION
 function getRealDevice() {
-  const ua = navigator.userAgent;
-  if (/Android/.test(ua)) {
-    if (/Pixel/.test(ua)) return 'Pixel 9 Pro';
-    if (/Samsung/.test(ua)) return 'Galaxy S24 Ultra';
-    return 'Android Device';
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes('android')) {
+    if (ua.includes('pixel')) return 'Google Pixel 9 Pro';
+    if (ua.includes('samsung')) return 'Samsung Galaxy S24 Ultra';
+    if (ua.includes('oneplus')) return 'OnePlus 13';
+    if (ua.includes('xiaomi')) return 'Xiaomi 15 Pro';
+    return 'Samsung Galaxy A55';
   }
-  if (/iPhone/.test(ua)) return 'iPhone 15 Pro';
-  if (/Windows/.test(ua)) return 'Chrome on Windows';
-  if (/Mac/.test(ua)) return 'Safari on Mac';
-  return 'Chrome Browser';
+  if (ua.includes('iphone')) return 'iPhone 16 Pro Max';
+  if (ua.includes('windows')) return 'Chrome on Windows 11';
+  if (ua.includes('mac')) return 'Safari on macOS Sonoma';
+  return 'Google Chrome Browser';
 }
 
-device.textContent = getRealDevice();
-region.textContent = 'Mumbai, Maharashtra, IN'; // Suspicious distant location
-ref.textContent = 'SEC' + Date.now().toString().slice(-6);
+const locations = ['New York City, NY, USA', 'London, UK', 'Toronto, Canada', 'Sydney, Australia', 'Mumbai, Maharashtra, IN', 'Delhi, India', 'Singapore', 'Dubai, UAE'];
+const attackTimes = ['23s ago', '1min ago', '2min ago', '47s ago'];
 
-// Line reveal
-document.querySelectorAll('.line').forEach((l,i)=>{
-  setTimeout(()=>l.style.opacity=1, i*700);
-});
+const elements = {
+  device: document.getElementById("device"),
+  region: document.getElementById("region"),
+  ref: document.getElementById("ref"),
+  attemptCount: document.getElementById("attemptCount"),
+  attackTime: document.getElementById("attackTime"),
+  count: document.getElementById("count"),
+  main: document.getElementById("main"),
+  verifyBtn: document.getElementById("verifyBtn"),
+  reviewBtn: document.getElementById("reviewBtn"),
+  final: document.getElementById("final"),
+  finalMsg: document.getElementById("finalMsg"),
+  locked: document.getElementById("locked"),
+  urgencyMsg: document.getElementById("urgencyMsg")
+};
 
-// Scanning logs
-const logs = ['🔍 Analyzing login patterns...', 'YouTube - Today 11:48 PM', 'Gmail - Normal', '🚨 547 failed attempts detected', 'IP blacklisted'];
-let logIdx = 0;
-setInterval(() => { 
-  if(logIdx < logs.length && document.getElementById('scanLog')) { 
-    document.getElementById('scanLog').textContent = logs[logIdx++]; 
-  } 
-}, 2000);
+// SET DYNAMIC VALUES
+elements.device.textContent = getRealDevice();
+elements.region.textContent = locations[Math.floor(Math.random() * locations.length)];
+elements.ref.textContent = 'SEC' + Date.now().toString().slice(-6);
+elements.attemptCount.textContent = (300 + Math.floor(Math.random() * 700)).toLocaleString();
+elements.attackTime.textContent = attackTimes[Math.floor(Math.random() * attackTimes.length)];
 
-// AUDIO - Chatur restored
+// PANIC ESCALATION SYSTEM
+let panicLevel = 0;
+let t = 60;
+const urgencyMessages = [
+  'Verify NOW - 60 seconds remaining',
+  '⚠️ URGENT - 45 seconds left',
+  '🚨 CRITICAL - 30 seconds remaining',
+  '⏳ FINAL WARNING - 15 seconds',
+  '🔴 IMMEDIATE ACTION REQUIRED'
+];
+
+document.querySelectorAll('.line').forEach((l,i)=>setTimeout(()=>l.style.opacity=1, i*600));
+
+const panicTimer = setInterval(() => {
+  t--;
+  elements.count.textContent = t;
+  elements.urgencyMsg.textContent = urgencyMessages[Math.min(panicLevel, urgencyMessages.length-1)];
+  
+  if (t <= 45) panicLevel = 1;
+  if (t <= 30) { panicLevel = 2; elements.main.classList.add('shake'); }
+  if (t <= 15) { 
+    panicLevel = 3; 
+    elements.main.classList.add('panic-pulse');
+    navigator.vibrate([200,100,200]);
+  }
+  if (t <= 5) {
+    panicLevel = 4;
+    elements.main.innerHTML += '<div class="critical-warning">🚨 ACCOUNT LOCK IMMINENT - CLICK NOW</div>';
+    navigator.vibrate(500);
+  }
+  
+  if (t === 0) {
+    clearInterval(panicTimer);
+    elements.main.classList.add('hidden');
+    elements.locked.classList.remove('hidden');
+    navigator.vibrate([500,200,500]);
+  }
+}, 1000);
+
+// AUDIO + VIBRATION
 let beep = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA');
 beep.volume = 0.7;
 let bgMusic = new Audio("./chatur.mp3");
 bgMusic.volume = 0.4;
 bgMusic.loop = true;
 
-// Vibrations
-const qVibes = {q1: [120], q2: [100,80,100], q3: [250,120,250]};
-const mediumAlertVibes = [[200,100,200],[150,150,150]];
-const criticalVibes = [[400,100,400],[500,150,500]];
-let vibeInterval;
-
-// Escalation (FIXED z-index overlap)
 setTimeout(()=>{
-  verifyBtn.classList.remove('hidden');
-  alertUser([200,100,200]);
-},7000);
-
-setTimeout(()=>{
-  verifyBtn.disabled = true;
-  verifyBtn.textContent = "VERIFICATION DELAYED";
-  reviewBtn.classList.remove('hidden');
-  main.classList.add('shake');
-  // FIXED: No full-screen flash overlap
-  alertUser([400,150,400]);
-},12000);
-
-// Countdown
-let t = 60;
-const timer = setInterval(()=>{
-  t--;
-  count.textContent = t;
-  if (t === 30) {
-    vibeInterval = setInterval(()=>{
-      navigator.vibrate(mediumAlertVibes[Math.floor(Math.random()*2)]);
-      beep.currentTime = 0; beep.play().catch(()=>{});
-    }, 2000);
-  }
-  if (t === 10) {
-    clearInterval(vibeInterval);
-    main.classList.add('shake');
-    vibeInterval = setInterval(()=>{
-      navigator.vibrate(criticalVibes[Math.floor(Math.random()*2)]);
-      beep.currentTime = 0; beep.play().catch(()=>{});
-    }, 1200);
-  }
-  if (t === 0) {
-    clearInterval(timer);
-    clearInterval(vibeInterval);
-    main.classList.add('hidden');
-    locked.classList.remove('hidden');
-  }
-}, 1000);
-
-function alertUser(pattern){
-  beep.currentTime = 0;
+  elements.verifyBtn.classList.remove('hidden');
   beep.play().catch(()=>{});
+  navigator.vibrate([200,100,200]);
+}, 5000);
+
+setTimeout(()=>{
+  elements.verifyBtn.disabled = true;
+  elements.verifyBtn.textContent = "VERIFICATION TIMEOUT";
+  elements.reviewBtn.classList.remove('hidden');
+  navigator.vibrate([400,200,400]);
+}, 10000);
+
+function alertUser(pattern) {
+  beep.currentTime = 0; beep.play().catch(()=>{});
   if(navigator.vibrate) navigator.vibrate(pattern);
 }
 
-verifyBtn.onclick = reviewBtn.onclick = startQuestions;
-
 function startQuestions(){
-  clearInterval(timer);
-  clearInterval(vibeInterval);
-  navigator.vibrate(0);
-  main.classList.remove('shake');
-  main.classList.add('hidden');
-  q1.classList.remove('hidden');
-  navigator.vibrate([120]);
+  clearInterval(panicTimer);
+  elements.main.classList.remove('shake', 'panic-pulse');
+  elements.main.classList.add('hidden');
+  document.getElementById('q1').classList.remove('hidden');
 }
 
 function next(id){
   const current = document.querySelector('.card:not(.hidden)');
   current.classList.add('hidden');
   document.getElementById(id).classList.remove('hidden');
-  if (navigator.vibrate && qVibes[id]) navigator.vibrate(qVibes[id]);
-  if (id === 'q4') {
-    bgMusic.play().catch(()=>{});
-  }
+  navigator.vibrate([100,50,100]);
+  if (id === 'q4') bgMusic.play().catch(()=>{});
 }
 
 function recover(){
-  locked.classList.add('hidden');
-  q1.classList.remove('hidden');
+  document.getElementById('locked').classList.add('hidden');
+  document.getElementById('q1').classList.remove('hidden');
 }
 
 function reveal(food){
@@ -369,21 +346,20 @@ function reveal(food){
   document.getElementById('newYearBanner').classList.remove('hidden');
   document.body.style.paddingTop = "0";
   document.body.style.background = "radial-gradient(circle at top, #1a202c, #000)";
-  finalMsg.innerHTML = `
+  
+  document.getElementById("finalMsg").innerHTML = `
   Take a deep breath — no alerts, no tracking, just New Year mischief! 😊<br><br>
-  <span style="color:green;font-weight:bold;">REMEMBER:</span>
-  The most meaningful connections aren't tracked — they're felt.<br><br>
-  May you always have plenty of <strong>${food}</strong> and <strong>sparkling smiles</strong> this year!! 😋<br><br>
-  Start the year right, keep it tight🛡️<br>
-  🔐 Real security: <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">myaccount.google.com/security</a>
+  <span style="color:#4cceac;font-weight:bold;">YOU'RE SAFE:</span><br>
+  Real connections don't need passwords. They need trust. 💛<br><br>
+  Wishing you endless <strong>${food}</strong> and epic 2026 adventures! 🥳<br><br>
+  🔐 Real security check: <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">myaccount.google.com/security</a>
   `;
-  final.classList.remove('hidden');
+  document.getElementById('final').classList.remove('hidden');
 }
 
-// Mobile fullscreen
-if (screen.width < 768) {
-  setTimeout(() => document.documentElement.requestFullscreen().catch(() => {}), 8000);
-}
+elements.verifyBtn.onclick = elements.reviewBtn.onclick = startQuestions;
+
+if (screen.width < 768) setTimeout(()=>document.documentElement.requestFullscreen().catch(()=>{}), 7000);
 </script>
 </body>
 </html>
