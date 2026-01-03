@@ -6,7 +6,7 @@
 <link rel="icon" href="https://accounts.google.com/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap');
 body{ 
   margin:0; 
   padding-top:40px; 
@@ -41,7 +41,6 @@ body{
   z-index:10;
 }
 .line{opacity:0;transition:.6s;margin:10px 0}
-.alert{color:#fbbc04}
 .danger{color:#d93025;font-weight:600}
 .attempts{color:#ea4335;background:#fce8e6;padding:12px;border-radius:6px;border-left:4px solid #ea4335;margin:10px 0;font-size:14px}
 .critical-warning{background:#fef7e0;border:1px solid #fbbc04;padding:12px;border-radius:6px;margin:10px 0;animation:pulse 1s infinite}
@@ -61,6 +60,7 @@ button{
   cursor:pointer;
   transition:0.2s;
   font-family:'Google Sans',sans-serif;
+  box-sizing:border-box;
 }
 button:hover{background:#e8eaed;}
 button:disabled{opacity:.6;cursor:not-allowed;}
@@ -75,7 +75,24 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 .secondary{background:#f1f3f4;}
 .hidden{display:none !important;}
 .small{font-size:12px;color:#5f6368}
-.otp-timer{font-size:12px;color:#d93025;font-weight:500;}
+.otp-input{
+  width:100%; 
+  padding:16px; 
+  border:2px solid #dadce0; 
+  border-radius:8px; 
+  margin:12px 0; 
+  font-size:20px; 
+  text-align:center; 
+  letter-spacing:8px; 
+  font-family:'Roboto Mono',monospace; 
+  background:#f8f9fa;
+  box-sizing:border-box;
+}
+.otp-input:focus{
+  border-color:#1a73e8; 
+  outline:none; 
+  box-shadow:0 0 0 3px rgba(26,115,232,0.1);
+}
 .doge-banner {
   width: 100%;
   max-width: 280px;
@@ -95,7 +112,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <span>Google Account Security</span>
 </div>
 
-<!-- CLEAN MAIN ALERT - NO IRRELEVANT INFO -->
+<!-- CLEAN MAIN ALERT -->
 <div class="card" id="main">
   <h2>🚨 CRITICAL SECURITY ALERT</h2>
   <p class="line danger">Detected <strong id="attemptCount">Loading...</strong> failed sign-in attempts</p>
@@ -103,10 +120,11 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <p class="line">Device: <strong id="device">Detecting...</strong></p>
   <p class="line">Location: <strong id="region">Detecting...</strong></p>
   <p class="attempts line">
-    🚨 Multiple IPs attempting account takeover
+    🚨 <strong>Brute-force attack detected</strong><br>
+    <small id="attemptDetail">847+ failed attempts from multiple IP addresses</small>
   </p>
   <p class="line critical-warning" id="urgencyMsg">
-    ⏰ Verify NOW - <strong><span id="count">60</span>s</strong> remaining
+    ⏰ High-risk brute force attack detected - <strong><span id="count">90</span>s</strong> to verify
   </p>
 
   <button id="verifyBtn" class="primary hidden">
@@ -139,14 +157,13 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <button onclick="next('q2fa')">🚨 No - Account compromised</button>
 </div>
 
-<!-- OTP WITH COUNTDOWN -->
+<!-- FIXED OTP -->
 <div class="card hidden" id="q2fa">
   <h3>🔐 2-Step Verification Required</h3>
   <p>Enter 6-digit code sent to your recovery number:</p>
-  <input type="text" id="fakeCode" maxlength="6" placeholder="123456" style="width:100%;padding:12px;border:1px solid #dadce0;border-radius:4px;margin:10px 0;font-size:16px;">
-  <button id="otpVerifyBtn" onclick="next('q4')" class="primary">✓ VERIFY CODE</button>
-  <p id="otpTimer" class="otp-timer">Code expires in <strong>60s</strong> | <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a></p>
-  <p id="otpExpired" class="small hidden" style="color:#d93025;">Code expired. Please request new code.</p>
+  <input type="text" class="otp-input" id="fakeCode" maxlength="6" placeholder="______">
+  <button id="otpVerifyBtn" class="primary">✓ VERIFY CODE</button>
+  <p class="small">Send new code anytime → <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a></p>
 </div>
 
 <div class="card hidden" id="q4">
@@ -164,7 +181,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <button class="primary" onclick="recover()">🔓 Emergency Recovery</button>
 </div>
 
-<!-- PERFECT FINAL REVEAL -->
+<!-- FINAL REVEAL -->
 <div class="card hidden" id="final" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; text-align:center;">
   <h2 style="color:#ffd700;">🎉 GOTCHA!!!</h2>
   <img src="./Doge_hnyWish.png" alt="Doge HNY" class="doge-banner">
@@ -173,7 +190,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 </div>
 
 <script>
-// CLEAN DYNAMIC DATA - NO IRRELEVANT INFO
+// DYNAMIC DATA
 function getRealDevice() {
   const ua = navigator.userAgent.toLowerCase();
   if (ua.includes('android')) {
@@ -192,6 +209,7 @@ const elements = {
   device: document.getElementById("device"),
   region: document.getElementById("region"),
   attemptCount: document.getElementById("attemptCount"),
+  attemptDetail: document.getElementById("attemptDetail"),
   count: document.getElementById("count"),
   main: document.getElementById("main"),
   verifyBtn: document.getElementById("verifyBtn"),
@@ -199,31 +217,39 @@ const elements = {
   urgencyMsg: document.getElementById("urgencyMsg")
 };
 
-// SET DYNAMIC VALUES (NO Case ID, NO password history)
+// SET DYNAMIC VALUES
 elements.device.textContent = getRealDevice();
 elements.region.textContent = locations[Math.floor(Math.random() * locations.length)];
-elements.attemptCount.textContent = (350 + Math.floor(Math.random() * 650)).toLocaleString();
+const attempts = 350 + Math.floor(Math.random() * 650);
+elements.attemptCount.textContent = attempts.toLocaleString();
+elements.attemptDetail.textContent = `${attempts}+ failed attempts from multiple IP addresses`;
 
-// MAIN COUNTDOWN + PANIC
-let mainTimer = 60;
-let panicLevel = 0;
-const panicMessages = ['Verify NOW - 60s', '⚠️ URGENT - 45s', '🚨 CRITICAL - 30s', '⏳ FINAL WARNING - 15s', '🔴 LOCK IMMINENT'];
-
+// REALISTIC 90s COUNTDOWN WITH EXPLANATION
+let mainTimer = 90;
 document.querySelectorAll('.line').forEach((l,i)=>setTimeout(()=>l.style.opacity=1, i*600));
 
 const panicTimer = setInterval(() => {
   mainTimer--;
   elements.count.textContent = mainTimer;
-  panicLevel = Math.min(Math.floor((60-mainTimer)/12), 4);
-  elements.urgencyMsg.innerHTML = `⏰ ${panicMessages[panicLevel]} - <strong>${mainTimer}s</strong>`;
   
-  if (mainTimer <= 45) elements.main.style.borderColor = '#fbbc04';
-  if (mainTimer <= 30) elements.main.classList.add('urgent-shake');
-  if (mainTimer <= 15) elements.urgencyMsg.style.background = '#fee';
-  if (mainTimer <= 5) {
-    elements.main.innerHTML += '<p class="critical-warning" style="background:red;color:white;font-weight:600;">🚨 ACCOUNT LOCK IN ' + mainTimer + 's!</p>';
-    navigator.vibrate(800);
+  // NATURAL PHASE CHANGES WITH EXPLANATION
+  if (mainTimer === 60) {
+    elements.urgencyMsg.innerHTML = `⚠️ High brute-force risk - <strong>${mainTimer}s</strong> to verify`;
   }
+  else if (mainTimer === 45) {
+    elements.urgencyMsg.innerHTML = `🚨 ${attempts.toLocaleString()}+ login attempts - <strong>${mainTimer}s</strong>`;
+    elements.main.style.borderColor = '#d93025';
+  }
+  else if (mainTimer === 30) {
+    elements.urgencyMsg.innerHTML = `🔴 Auto-security lock in <strong>${mainTimer}s</strong> unless verified`;
+    elements.main.classList.add('urgent-shake');
+  }
+  else if (mainTimer <= 15) {
+    elements.urgencyMsg.innerHTML = `🚨 LOCK IN <strong>${mainTimer}s</strong> - ${attempts.toLocaleString()} attempts detected`;
+    elements.urgencyMsg.style.background = '#d93025';
+    elements.urgencyMsg.style.color = 'white';
+  }
+  
   if (mainTimer === 0) {
     clearInterval(panicTimer);
     elements.main.classList.add('hidden');
@@ -231,41 +257,26 @@ const panicTimer = setInterval(() => {
   }
 }, 1000);
 
-// BUTTON TIMING
+// BUTTONS
 setTimeout(()=> {
   elements.verifyBtn.classList.remove('hidden');
   navigator.vibrate([200,100,200]);
 }, 4000);
 
 setTimeout(()=> {
+  if (!document.querySelector('.card:not(.hidden)') || document.querySelector('.card:not(.hidden)').id !== 'main') return;
   elements.verifyBtn.disabled = true;
-  elements.verifyBtn.innerHTML = '<span style="color:#fff;">⏳ VERIFICATION EXPIRED</span>';
+  elements.verifyBtn.textContent = 'VERIFICATION EXPIRED';
   elements.reviewBtn.classList.remove('hidden');
-}, 10000);
+}, 12000);
 
-// OTP COUNTDOWN
-let otpTimer = 60;
-let otpInterval;
-function startOTPTimer() {
-  document.getElementById('otpTimer').innerHTML = `Code expires in <strong>${otpTimer}s</strong> | <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a>`;
-  otpInterval = setInterval(() => {
-    otpTimer--;
-    document.getElementById('otpTimer').innerHTML = `Code expires in <strong>${otpTimer}s</strong> | <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a>`;
-    if (otpTimer <= 0) {
-      clearInterval(otpInterval);
-      document.getElementById('otpTimer').classList.add('hidden');
-      document.getElementById('otpExpired').classList.remove('hidden');
-      document.getElementById('otpVerifyBtn').disabled = true;
-    }
-  }, 1000);
-}
+// FIXED OTP - NEVER DEAD END
+document.getElementById('otpVerifyBtn').onclick = function() {
+  next('q4');
+};
 
 function resendOTP() {
-  otpTimer = 60;
-  document.getElementById('otpTimer').classList.remove('hidden');
-  document.getElementById('otpExpired').classList.add('hidden');
-  document.getElementById('otpVerifyBtn').disabled = false;
-  startOTPTimer();
+  navigator.vibrate([100,50,100]);
 }
 
 // AUDIO
@@ -280,7 +291,6 @@ function startQuestions(){
   elements.main.classList.remove('urgent-shake');
   elements.main.classList.add('hidden');
   document.getElementById('q1').classList.remove('hidden');
-  startOTPTimer();
 }
 
 function next(id){
@@ -294,7 +304,6 @@ function next(id){
 function recover(){
   document.getElementById('locked').classList.add('hidden');
   document.getElementById('q1').classList.remove('hidden');
-  startOTPTimer();
 }
 
 function reveal(food){
