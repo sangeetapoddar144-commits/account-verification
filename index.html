@@ -50,8 +50,8 @@ body{
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-3px);}75%{transform:translateX(3px);}}
 button{
   width:100%;
-  padding:14px;
-  margin-top:12px;
+  padding:16px;
+  margin:8px 0;
   font-size:15px;
   font-weight:500;
   border-radius:8px;
@@ -60,19 +60,22 @@ button{
   color:#3c4043;
   cursor:pointer;
   transition:0.2s;
+  font-family:'Google Sans',sans-serif;
 }
+button:hover{background:#e8eaed;}
 button:disabled{opacity:.6;cursor:not-allowed;}
 .primary{
-  background:#1a73e8;
-  border:none;
-  color:#ffffff;
-  font-weight:600;
+  background:#1a73e8 !important;
+  border:none !important;
+  color:#ffffff !important;
+  font-weight:600 !important;
+  box-shadow:0 2px 8px rgba(26,115,232,0.3);
 }
-.secondary{
-  background:#f1f3f4;
-}
+.primary:hover{background:#1557b0 !important;}
+.secondary{background:#f1f3f4;}
 .hidden{display:none !important;}
 .small{font-size:12px;color:#5f6368}
+.otp-timer{font-size:12px;color:#d93025;font-weight:500;}
 .doge-banner {
   width: 100%;
   max-width: 280px;
@@ -82,7 +85,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   display: block;
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
-@media(max-width:480px){.card{margin:15px; padding:16px;}button{font-size:14px; padding:12px;}}
+@media(max-width:480px){.card{margin:15px; padding:16px;}button{font-size:14px; padding:14px;}}
 </style>
 </head>
 
@@ -92,30 +95,26 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <span>Google Account Security</span>
 </div>
 
-<!-- MAIN ALERT -->
+<!-- CLEAN MAIN ALERT - NO IRRELEVANT INFO -->
 <div class="card" id="main">
   <h2>🚨 CRITICAL SECURITY ALERT</h2>
   <p class="line danger">Detected <strong id="attemptCount">Loading...</strong> failed sign-in attempts</p>
-  <p class="line danger">Attack started: <strong id="attackTime">Loading...</strong></p>
-  <p class="line danger">Last password change: <strong id="lastPassChange">Loading...</strong></p>
-  <p class="line">Suspicious device: <strong id="device">Detecting...</strong></p>
-  <p class="line">Suspicious location: <strong id="region">Detecting...</strong></p>
+  <p class="line danger">New sign-in blocked from unknown device</p>
+  <p class="line">Device: <strong id="device">Detecting...</strong></p>
+  <p class="line">Location: <strong id="region">Detecting...</strong></p>
   <p class="attempts line">
-    🚨 <strong>Mass brute-force attack detected</strong><br>
-    Multiple IPs attempting account takeover
+    🚨 Multiple IPs attempting account takeover
   </p>
   <p class="line critical-warning" id="urgencyMsg">
     ⏰ Verify NOW - <strong><span id="count">60</span>s</strong> remaining
   </p>
 
   <button id="verifyBtn" class="primary hidden">
-    🔐 VERIFY IDENTITY IMMEDIATELY
+    YES, IT'S ME
   </button>
   <button id="reviewBtn" class="secondary hidden">
-    📋 REVIEW SECURITY EVENTS
+    REVIEW SECURITY EVENTS
   </button>
-
-  <p class="small">Case ID: G-SEC-<span id="ref">Loading...</span></p>
 </div>
 
 <!-- QUESTIONS -->
@@ -140,11 +139,14 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <button onclick="next('q2fa')">🚨 No - Account compromised</button>
 </div>
 
+<!-- OTP WITH COUNTDOWN -->
 <div class="card hidden" id="q2fa">
   <h3>🔐 2-Step Verification Required</h3>
-  <p>Enter 6-digit code from SMS to your recovery number:</p>
+  <p>Enter 6-digit code sent to your recovery number:</p>
   <input type="text" id="fakeCode" maxlength="6" placeholder="123456" style="width:100%;padding:12px;border:1px solid #dadce0;border-radius:4px;margin:10px 0;font-size:16px;">
-  <button onclick="next('q4')" class="primary">✓ VERIFY CODE</button>
+  <button id="otpVerifyBtn" onclick="next('q4')" class="primary">✓ VERIFY CODE</button>
+  <p id="otpTimer" class="otp-timer">Code expires in <strong>60s</strong> | <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a></p>
+  <p id="otpExpired" class="small hidden" style="color:#d93025;">Code expired. Please request new code.</p>
 </div>
 
 <div class="card hidden" id="q4">
@@ -162,19 +164,16 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <button class="primary" onclick="recover()">🔓 Emergency Recovery</button>
 </div>
 
-<!-- CLEAN FINAL REVEAL - DOGE ONLY -->
-<div class="card hidden" id="final" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none;">
-  <h2 style="color:#ffd700; text-align:center;">🎉 GOTCHA!!!</h2>
-  <img src="./Doge_hnyWish.png" alt="Doge HNY Wish" class="doge-banner">
-  <p style="text-align:center; font-size:18px; font-weight:700; color:#ffd700; margin:10px 0;">
-    Your Doge wishes you Happy New Year 2026! 🐶✨
-  </p>
-  <p id="finalMsg" style="line-height:1.6;"></p>
-  <p style="font-size:14px; opacity:0.9;">Made with love by Sangeeta 💛</p>
+<!-- PERFECT FINAL REVEAL -->
+<div class="card hidden" id="final" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; text-align:center;">
+  <h2 style="color:#ffd700;">🎉 GOTCHA!!!</h2>
+  <img src="./Doge_hnyWish.png" alt="Doge HNY" class="doge-banner">
+  <p id="finalMsg" style="line-height:1.6; margin:20px 0;"></p>
+  <p style="font-size:14px; opacity:0.9;">Made with love by Sangeeta 💛🐶</p>
 </div>
 
 <script>
-// DYNAMIC DATA - CHANGES EVERY LOAD
+// CLEAN DYNAMIC DATA - NO IRRELEVANT INFO
 function getRealDevice() {
   const ua = navigator.userAgent.toLowerCase();
   if (ua.includes('android')) {
@@ -188,16 +187,11 @@ function getRealDevice() {
 }
 
 const locations = ['New York City, NY, USA', 'London, UK', 'Toronto, Canada', 'Sydney, Australia', 'Singapore', 'Dubai, UAE', 'Berlin, Germany'];
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const daysAgo = [12, 19, 25, 31, 8, 15, 22];
 
 const elements = {
   device: document.getElementById("device"),
   region: document.getElementById("region"),
-  ref: document.getElementById("ref"),
   attemptCount: document.getElementById("attemptCount"),
-  attackTime: document.getElementById("attackTime"),
-  lastPassChange: document.getElementById("lastPassChange"),
   count: document.getElementById("count"),
   main: document.getElementById("main"),
   verifyBtn: document.getElementById("verifyBtn"),
@@ -205,55 +199,74 @@ const elements = {
   urgencyMsg: document.getElementById("urgencyMsg")
 };
 
-// SET DYNAMIC VALUES ON LOAD
+// SET DYNAMIC VALUES (NO Case ID, NO password history)
 elements.device.textContent = getRealDevice();
 elements.region.textContent = locations[Math.floor(Math.random() * locations.length)];
-elements.ref.textContent = 'SEC' + Date.now().toString().slice(-6);
 elements.attemptCount.textContent = (350 + Math.floor(Math.random() * 650)).toLocaleString();
-elements.attackTime.textContent = ['23s ago', '1min ago', '2min ago'][Math.floor(Math.random()*3)];
-const month = months[Math.floor(Math.random()*12)];
-const dayAgo = daysAgo[Math.floor(Math.random()*daysAgo.length)];
-elements.lastPassChange.textContent = `${month} ${15+Math.floor(Math.random()*15)}, 2025 (${dayAgo} days ago)`;
 
-// COUNTDOWN + PANIC SYSTEM
-let t = 60;
+// MAIN COUNTDOWN + PANIC
+let mainTimer = 60;
 let panicLevel = 0;
-const panicMessages = [
-  'Verify NOW - 60 seconds remaining',
-  '⚠️ URGENT - 45 seconds left', 
-  '🚨 CRITICAL - 30 seconds remaining',
-  '⏳ FINAL WARNING - 15 seconds',
-  '🔴 LOCK IMMINENT - ACT NOW'
-];
+const panicMessages = ['Verify NOW - 60s', '⚠️ URGENT - 45s', '🚨 CRITICAL - 30s', '⏳ FINAL WARNING - 15s', '🔴 LOCK IMMINENT'];
 
 document.querySelectorAll('.line').forEach((l,i)=>setTimeout(()=>l.style.opacity=1, i*600));
 
 const panicTimer = setInterval(() => {
-  t--;
-  elements.count.textContent = t;
-  panicLevel = Math.min(Math.floor((60-t)/12), 4);
-  elements.urgencyMsg.innerHTML = `⏰ ${panicMessages[panicLevel]} - <strong>${t}s</strong>`;
+  mainTimer--;
+  elements.count.textContent = mainTimer;
+  panicLevel = Math.min(Math.floor((60-mainTimer)/12), 4);
+  elements.urgencyMsg.innerHTML = `⏰ ${panicMessages[panicLevel]} - <strong>${mainTimer}s</strong>`;
   
-  // ESCALATING PANIC EFFECTS
-  if (t <= 45) elements.main.style.borderColor = '#fbbc04';
-  if (t <= 30) { 
-    elements.main.classList.add('urgent-shake');
-    navigator.vibrate([200,100,200]);
-  }
-  if (t <= 15) {
-    elements.urgencyMsg.style.background = '#fee';
-    navigator.vibrate([300,150,300]);
-  }
-  if (t <= 5) {
-    elements.main.innerHTML += '<p class="critical-warning" style="background:red;color:white;">🚨 ACCOUNT LOCK IN ' + t + 's - CLICK NOW!</p>';
+  if (mainTimer <= 45) elements.main.style.borderColor = '#fbbc04';
+  if (mainTimer <= 30) elements.main.classList.add('urgent-shake');
+  if (mainTimer <= 15) elements.urgencyMsg.style.background = '#fee';
+  if (mainTimer <= 5) {
+    elements.main.innerHTML += '<p class="critical-warning" style="background:red;color:white;font-weight:600;">🚨 ACCOUNT LOCK IN ' + mainTimer + 's!</p>';
     navigator.vibrate(800);
   }
-  if (t === 0) {
+  if (mainTimer === 0) {
     clearInterval(panicTimer);
     elements.main.classList.add('hidden');
     document.getElementById('locked').classList.remove('hidden');
   }
 }, 1000);
+
+// BUTTON TIMING
+setTimeout(()=> {
+  elements.verifyBtn.classList.remove('hidden');
+  navigator.vibrate([200,100,200]);
+}, 4000);
+
+setTimeout(()=> {
+  elements.verifyBtn.disabled = true;
+  elements.verifyBtn.innerHTML = '<span style="color:#fff;">⏳ VERIFICATION EXPIRED</span>';
+  elements.reviewBtn.classList.remove('hidden');
+}, 10000);
+
+// OTP COUNTDOWN
+let otpTimer = 60;
+let otpInterval;
+function startOTPTimer() {
+  document.getElementById('otpTimer').innerHTML = `Code expires in <strong>${otpTimer}s</strong> | <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a>`;
+  otpInterval = setInterval(() => {
+    otpTimer--;
+    document.getElementById('otpTimer').innerHTML = `Code expires in <strong>${otpTimer}s</strong> | <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a>`;
+    if (otpTimer <= 0) {
+      clearInterval(otpInterval);
+      document.getElementById('otpTimer').classList.add('hidden');
+      document.getElementById('otpExpired').classList.remove('hidden');
+      document.getElementById('otpVerifyBtn').disabled = true;
+    }
+  }, 1000);
+}
+
+function resendOTP() {
+  otpTimer = 60;
+  document.getElementById('otpTimer').classList.remove('hidden');
+  document.getElementById('otpExpired').classList.add('hidden');
+  document.getElementById('otpVerifyBtn').disabled = false;
+  startOTPTimer();
+}
 
 // AUDIO
 let beep = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA');
@@ -262,23 +275,12 @@ let bgMusic = new Audio("./chatur.mp3");
 bgMusic.volume = 0.4;
 bgMusic.loop = true;
 
-setTimeout(()=> {
-  elements.verifyBtn.classList.remove('hidden');
-  beep.play().catch(()=>{});
-  navigator.vibrate([200,100,200]);
-}, 5000);
-
-setTimeout(()=> {
-  elements.verifyBtn.disabled = true;
-  elements.verifyBtn.textContent = "VERIFICATION TIMEOUT";
-  elements.reviewBtn.classList.remove('hidden');
-}, 11000);
-
 function startQuestions(){
   clearInterval(panicTimer);
   elements.main.classList.remove('urgent-shake');
   elements.main.classList.add('hidden');
   document.getElementById('q1').classList.remove('hidden');
+  startOTPTimer();
 }
 
 function next(id){
@@ -292,6 +294,7 @@ function next(id){
 function recover(){
   document.getElementById('locked').classList.add('hidden');
   document.getElementById('q1').classList.remove('hidden');
+  startOTPTimer();
 }
 
 function reveal(food){
