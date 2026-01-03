@@ -3,127 +3,103 @@
 <head>
 <meta charset="UTF-8">
 <title>Google Security Alert</title>
+<link rel="icon" href="https://accounts.google.com/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-/* --- Body & General Styles --- */
-body {
-  margin: 0;
-  padding-top: 40px;
-  background: #0b0f14;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  color: #eaeaea;
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap');
+body{ 
+  margin:0; 
+  padding-top:40px; 
+  background:#fafbfc; 
+  font-family:'Google Sans','Roboto',system-ui; 
+  color:#1a1a1a; 
 }
-
-/* --- Fake Google Header --- */
-.header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 40px;
-  background: #111827;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid #1f2937;
-  z-index: 1000;
+.header{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:40px;
+  background:#ffffff;
+  padding:0 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid #dadce0;
+  z-index:1000;
+  box-shadow:0 1px 0 rgba(0,0,0,0.05);
 }
-
-.header img {
-  width: 22px;
+.header img{width:22px}
+.card{
+  max-width:420px;
+  margin:20px auto;
+  background:#ffffff;
+  border:1px solid #dadce0;
+  border-radius:8px;
+  padding:22px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  transition:0.3s;
 }
-
-/* --- Card Styles --- */
-.card {
-  max-width: 420px;
-  margin: 20px auto;
-  background: #121821;
-  border-radius: 12px;
-  padding: 22px;
-  box-shadow: 0 0 35px rgba(255,0,0,0.25);
-  transition: all 0.3s ease;
+.line{opacity:0;transition:.6s;margin:10px 0}
+.alert{color:#fbbc04}
+.danger{color:#d93025;font-weight:600}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  font-size:15px;
+  font-weight:500;
+  border-radius:8px;
+  border:1px solid #dadce0;
+  background:#f8f9fa;
+  color:#3c4043;
+  cursor:pointer;
+  transition:0.2s;
 }
-
-.line {
-  opacity: 0;
-  transition: opacity 0.6s;
-  margin: 10px 0;
+button:disabled{opacity:.6;cursor:not-allowed;}
+.primary{
+  background:#1a73e8;
+  border:none;
+  color:#ffffff;
+  font-weight:600;
 }
-
-.alert { color: #facc15; }
-.danger { color: #ff4d4d; font-weight: 600; }
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 6px;
-  border: 1px solid #2c3440;
-  background: linear-gradient(#1f2937, #111827);
-  color: #e5e7eb;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.secondary{
+  background:#f1f3f4;
 }
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.hidden{display:none !important;}
+.small{font-size:12px;color:#5f6368}
+/* Animations */
+.shake{animation:shake .4s linear 2}
+@keyframes shake{
+  25%{transform:translateX(-4px)}
+  50%{transform:translateX(4px)}
+  75%{transform:translateX(-4px)}
 }
-
-.primary {
-  background: #d93025;
-  border: none;
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-
-.secondary {
-  background: linear-gradient(#374151, #1f2937);
-}
-
-.hidden { display: none !important; }
-.small { font-size: 12px; color: #9ca3af; }
-
-/* --- Shake & Flash Animations --- */
-.shake {
-  animation: shake 0.4s linear 2;
-}
-@keyframes shake {
-  25% { transform: translateX(-4px); }
-  50% { transform: translateX(4px); }
-  75% { transform: translateX(-4px); }
-}
-
-.flash {
+.flash { 
   animation: flash 1s infinite;
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;
 }
-@keyframes flash {
-  0%, 100% { box-shadow: 0 0 35px rgba(255,0,0,0.5); }
-  50% { box-shadow: 0 0 60px rgba(255,255,0,0.8); }
+@keyframes flash{
+  0%,100%{box-shadow:0 0 35px rgba(255,0,0,.5);}
+  50%{box-shadow:0 0 60px rgba(255,255,0,0.8);}
 }
-
-/* --- New Year Banner --- */
-#newYearBanner {
+#newYearBanner{
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 40px;
   z-index: 1001;
-  background: linear-gradient(90deg, #7c2d12, #b45309, #7c2d12);
+  animation: dropIn 0.8s ease-out;
+  box-shadow: 0 6px 25px rgba(0,0,0,.4);
+  background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: dropIn 0.8s ease-out forwards;
 }
-
-@keyframes dropIn {
-  from { transform: translateY(-100%); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+@keyframes dropIn{
+  from{transform: translateY(-100%); opacity: 0;}
+  to{transform: translateY(0); opacity: 1;}
 }
-
-/* --- Banner Text Glowing --- */
-.ny-text {
+.ny-text{
   text-align: center;
   font-weight: 700;
   font-size: 16px;
@@ -131,58 +107,68 @@ button:disabled {
   animation: glowText 2.5s ease-in-out infinite;
   line-height: 1.2;
 }
-
-.ny-text span {
+.ny-text span{
   display: block;
   font-size: 13px;
   font-weight: 500;
   color: #fde68a;
   margin-top: 2px;
 }
-
-@keyframes glowText {
-  0%   { text-shadow: 0 0 6px rgba(253,230,138,0.4); transform: scale(1); }
-  50%  { text-shadow: 0 0 14px rgba(253,230,138,0.9); transform: scale(1.04); }
-  100% { text-shadow: 0 0 6px rgba(253,230,138,0.4); transform: scale(1); }
+@keyframes glowText{
+  0%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}
+  50%{text-shadow: 0 0 14px rgba(253,230,138,.9); transform: scale(1.04);}
+  100%{text-shadow: 0 0 6px rgba(253,230,138,.4); transform: scale(1);}
 }
-
-/* --- Responsive --- */
+.doge-banner {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 12px;
+  margin: 15px auto;
+  display: block;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
 @media(max-width:480px){
-  .card { margin: 15px; padding: 16px; }
-  button { font-size: 14px; padding: 12px; }
+  .card{margin:15px; padding:16px;}
+  button{font-size:14px; padding:12px;}
 }
 </style>
 </head>
 
 <body>
-<!-- Fake GOOGLE HEADER -->
+<!-- Google Header -->
 <div class="header" id="googleHeader">
   <img src="https://www.gstatic.com/images/branding/product/1x/googleg_32dp.png">
   <span>Google Account Security</span>
 </div>
 
-<!-- NEW YEAR BANNER (Hidden initially) -->
-<div id="newYearBanner" class="hidden">
+<!-- New Year Banner -->
+<div class="hidden" id="newYearBanner">
   <div class="ny-text">
     ✨ Happy New Year 2026 ✨<br>
     <span>Wishing you and your family joy, health & peace 💛</span>
   </div>
 </div>
 
-<!-- Main alert card -->
+<!-- Main Alert -->
 <div class="card" id="main">
-  <h2>Security Alert</h2>
-  <p class="line danger">Unusual sign-in attempt detected</p>
-  <p class="line">Suspicious activity blocked</p>
-  <p class="line">Device: <strong id="device"></strong></p>
-  <p class="line">Location: <strong id="region"></strong></p>
+  <h2>⛔ Security Alert</h2>
+  <p class="line danger">We blocked a sign-in attempt that doesn't match your usual activity.</p>
+  <p class="line">Device: <strong id="device">Loading...</strong></p>
+  <p class="line">Location: <strong id="region">Loading...</strong></p>
   <p class="line alert">Action required to avoid restriction</p>
+  <p class="line" id="scanLog">🔍 Scanning recent activity...</p>
   <p class="line">Auto-lock in <strong><span id="count">60</span>s</strong></p>
 
-  <button id="verifyBtn" class="primary hidden">VERIFY & SECURE ACCOUNT</button>
-  <button id="reviewBtn" class="secondary hidden">REVIEW SECURITY ACTIVITY</button>
+  <button id="verifyBtn" class="primary hidden">
+    VERIFY & SECURE ACCOUNT
+  </button>
 
-  <p class="small">Case ID: G-SEC-<span id="ref"></span></p>
+  <button id="reviewBtn" class="secondary hidden">
+    REVIEW SECURITY ACTIVITY
+  </button>
+
+  <p class="small">Case ID: G-SEC-<span id="ref">Loading...</span></p>
 </div>
 
 <!-- Questions -->
@@ -203,8 +189,16 @@ button:disabled {
 <div class="card hidden" id="q3">
   <h3>Security Check 3/4</h3>
   <p>Did you download any unknown files or apps recently?</p>
-  <button onclick="next('q4')">Yes</button>
-  <button onclick="next('q4')">No</button>
+  <button onclick="next('q2fa')">Yes</button>
+  <button onclick="next('q2fa')">No</button>
+</div>
+
+<!-- 2FA Fake -->
+<div class="card hidden" id="q2fa">
+  <h3>🔐 2-Step Verification</h3>
+  <p>Enter code sent to your phone:</p>
+  <input type="text" id="fakeCode" maxlength="6" placeholder="123456" style="width:100%;padding:12px;border:1px solid #dadce0;border-radius:4px;margin:10px 0;font-size:16px;">
+  <button onclick="next('q4')" class="primary">VERIFY CODE</button>
 </div>
 
 <div class="card hidden" id="q4">
@@ -215,170 +209,204 @@ button:disabled {
   <button onclick="reveal('Chocolate 🍫')">Chocolate 🍫</button>
 </div>
 
-<!-- Locked state -->
+<!-- Locked -->
 <div class="card hidden" id="locked">
   <h2 class="danger">Account Locked</h2>
   <p>You did not respond to a critical security alert.</p>
   <button class="primary" onclick="recover()">RECOVER ACCOUNT</button>
 </div>
 
-<!-- Final reveal -->
+<!-- Final Reveal WITH DOGE BANNER -->
 <div class="card hidden" id="final">
-  <h2> 👻 Got you!!!</h2>
+  <h2>👻 Got you!!!</h2>
+  <img src="./Doge_hnyWish.png" alt="Happy New Year Doge" class="doge-banner">
   <p id="finalMsg"></p>
   <p>— With love,<br> <strong>Sangeeta</strong> 💛</p>
 </div>
 
 <script>
-// ----- ELEMENTS -----
-const regionEl = document.getElementById("region");
-const deviceEl = document.getElementById("device");
-const refEl = document.getElementById("ref");
-const countEl = document.getElementById("count");
-
-const mainCard = document.getElementById("main");
+// Elements
+const region = document.getElementById("region");
+const device = document.getElementById("device");
+const ref = document.getElementById("ref");
+const count = document.getElementById("count");
+const main = document.getElementById("main");
 const verifyBtn = document.getElementById("verifyBtn");
 const reviewBtn = document.getElementById("reviewBtn");
-const finalCard = document.getElementById("final");
-const finalMsgEl = document.getElementById("finalMsg");
-const lockedCard = document.getElementById("locked");
+const final = document.getElementById("final");
+const finalMsg = document.getElementById("finalMsg");
+const locked = document.getElementById("locked");
+const q1 = document.getElementById("q1");
+const q2 = document.getElementById("q2");
+const q3 = document.getElementById("q3");
+const q4 = document.getElementById("q4");
 
-// ----- Fake data -----
-const regions = ["Berlin, DE", "Amsterdam, NL", "London, UK", "Sydney, AU"];
-const devices = ["Pixel 7", "iPhone 13 Pro", "Galaxy S22", "Galaxy S24 Ultra", "Pixel 9 Pro"];
+// Real browser data
+device.textContent = /Mobile|iPhone|Android|Pixel|Galaxy/i.test(navigator.userAgent) ? 
+  navigator.userAgent.split(/[();]/)[1]?.trim() || 'Chrome Mobile' : 'Chrome Browser';
+region.textContent = navigator.language.includes('en-IN') ? 'Bhatpara, West Bengal, IN' : `${navigator.language.toUpperCase()}`;
+ref.textContent = 'G' + Date.now().toString().slice(-7);
 
-regionEl.textContent = regions[Math.floor(Math.random() * regions.length)];
-deviceEl.textContent = devices[Math.floor(Math.random() * devices.length)];
-refEl.textContent = Math.floor(100000 + Math.random() * 900000);
-
-// ----- Reveal lines one by one -----
-document.querySelectorAll('.line').forEach((line, idx) => {
-  setTimeout(() => line.style.opacity = 1, idx * 700);
+// Line reveal
+document.querySelectorAll('.line').forEach((l,i)=>{
+  setTimeout(()=>l.style.opacity=1, i*700);
 });
 
-// ----- Sounds -----
-let audioUnlocked = false;
-const beepSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA');
-beepSound.volume = 0.7;
+// Fake scanning logs
+const logs = ['🔍 Scanning recent activity...', 'YouTube - Today 11:24 PM', 'Gmail - Bhatpara, IN', 'Suspicious IP blocked', 'Chrome - 2hrs ago'];
+let logIdx = 0;
+setInterval(() => { 
+  if(logIdx < logs.length && document.getElementById('scanLog')) { 
+    document.getElementById('scanLog').textContent = logs[logIdx++]; 
+  } 
+}, 2000);
 
-const bgMusic = new Audio("./chatur.mp3");
+// SOUNDS - CHATUR MP3 with ORIGINAL TIMING
+let audioUnlocked = false;
+let beep = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA');
+beep.volume = 0.7;
+let bgMusic = new Audio("./chatur.mp3");
 bgMusic.volume = 0.4;
 bgMusic.loop = true;
 
-// ----- Vibration patterns -----
-const vibePatterns = [
-  [200, 100, 300], [150, 200, 150], [400, 100, 300], [100, 300, 150], [250, 250, 250]
-];
+function toggleMusic() {
+  if (bgMusic.paused) {
+    bgMusic.play();
+  } else {
+    bgMusic.pause();
+  }
+}
+
+// Vibration patterns
+const qVibes = {q1: [120], q2: [100, 80, 100], q3: [250, 120, 250]};
+const mediumAlertVibes = [[200,100,200], [150,150,150]];
+const criticalVibes = [[400,100,400], [500,150,500]];
+
 let vibeInterval;
 
-// ----- Show verify button & escalation -----
-setTimeout(() => {
+// Escalation buttons
+setTimeout(()=>{
   verifyBtn.classList.remove('hidden');
-  triggerAlert([200, 100, 200]);
-}, 7000);
+  alertUser([200,100,200]);
+},7000);
 
-setTimeout(() => {
+setTimeout(()=>{
   verifyBtn.disabled = true;
   verifyBtn.textContent = "VERIFICATION DELAYED";
   reviewBtn.classList.remove('hidden');
-  mainCard.classList.add('shake');
-  triggerAlert([400, 150, 400]);
+  main.classList.add('shake');
+  alertUser([400,150,400]);
   startScaryMode();
-}, 10000);
+},10000);
 
-// ----- Countdown -----
-let timerVal = 60;
-const timer = setInterval(() => {
-  timerVal--;
-  countEl.textContent = timerVal;
+// Countdown
+let t = 60;
+const timer = setInterval(()=>{
+  t--;
+  count.textContent = t;
 
-  if (timerVal === 10) mainCard.classList.add('flash');
-  if (timerVal === 0) {
+  if (t === 30) {
+    vibeInterval = setInterval(()=>{
+      const rand = Math.floor(Math.random() * mediumAlertVibes.length);
+      navigator.vibrate(mediumAlertVibes[rand]);
+      beep.currentTime = 0;
+      beep.play().catch(()=>{});
+    }, 2000);
+  }
+
+  if (t === 10) {
+    clearInterval(vibeInterval);
+    main.classList.add('flash');
+    vibeInterval = setInterval(()=>{
+      const rand = Math.floor(Math.random() * criticalVibes.length);
+      navigator.vibrate(criticalVibes[rand]);
+      beep.currentTime = 0;
+      beep.play().catch(()=>{});
+    }, 1200);
+  }
+
+  if (t === 0) {
     clearInterval(timer);
-    mainCard.classList.add('hidden');
-    lockedCard.classList.remove('hidden');
-    triggerAlert([700, 200, 700]);
+    clearInterval(vibeInterval);
+    main.classList.add('hidden');
+    locked.classList.remove('hidden');
+    navigator.vibrate(0);
   }
 }, 1000);
 
-// ----- Alert function -----
-function triggerAlert(pattern) {
-  beepSound.currentTime = 0;
-  beepSound.play().catch(() => {});
-  if ('vibrate' in navigator) navigator.vibrate(pattern);
+function alertUser(pattern){
+  beep.currentTime = 0;
+  beep.play().catch(()=>{});
+  if(navigator.vibrate) navigator.vibrate(pattern);
 }
 
-// ----- Scary mode -----
-function startScaryMode() {
-  if (vibeInterval) clearInterval(vibeInterval);
-  let idx = 0;
-  vibeInterval = setInterval(() => {
-    const rand = Math.floor(Math.random() * vibePatterns.length);
-    if ('vibrate' in navigator) navigator.vibrate(vibePatterns[rand]);
-    beepSound.currentTime = 0;
-    beepSound.play().catch(() => {});
-    idx = (idx + 1) % vibePatterns.length;
-  }, 1200);
-}
+verifyBtn.onclick = startQuestions;
+reviewBtn.onclick = startQuestions;
 
-// ----- Navigation -----
-verifyBtn.onclick = reviewBtn.onclick = () => {
-  if (!audioUnlocked) audioUnlocked = true;
+function startQuestions(){
+  audioUnlocked = true;
   clearInterval(timer);
-  mainCard.classList.add('hidden');
-  document.getElementById('q1').classList.remove('hidden');
-};
+  clearInterval(vibeInterval);
+  navigator.vibrate(0);
+  main.classList.add('hidden');
+  q1.classList.remove('hidden');
+  navigator.vibrate(qVibes.q1);
+}
+  
+function next(id){
+  const current = document.querySelector('.card:not(.hidden)');
+  current.classList.add('hidden');
+  document.getElementById(id).classList.remove('hidden');
+  
+  if (navigator.vibrate && qVibes[id]) {
+    navigator.vibrate(qVibes[id]);
+  }
 
-// ----- Next question -----
-function next(nextId) {
-  const activeCard = document.querySelector('.card:not(.hidden)');
-  activeCard?.classList.add('hidden');
-
-  const nextCard = document.getElementById(nextId);
-  nextCard.classList.remove('hidden');
-
-  if (nextId === 'q4') {
+  if (id === 'q4') {
     clearInterval(vibeInterval);
     navigator.vibrate(0);
-    mainCard.classList.remove('shake', 'flash');
-    bgMusic.play().catch(() => {});
+    main.classList.remove('shake','flash');
+    bgMusic.play().catch(()=>{});
   }
 }
 
-// ----- Recover from lock -----
-function recover() {
-  lockedCard.classList.add('hidden');
-  document.getElementById('q1').classList.remove('hidden');
+function recover(){
+  locked.classList.add('hidden');
+  q1.classList.remove('hidden');
 }
 
-// ----- Final reveal -----
-function reveal(foodChoice) {
-  document.querySelector('.card:not(.hidden)')?.classList.add('hidden');
+function startScaryMode(){
+  // Original scary mode function
+}
+
+function reveal(food){
+  const active = document.querySelector('.card:not(.hidden)');
+  if(active) active.classList.add('hidden');
 
   document.getElementById('googleHeader').classList.add('hidden');
   document.getElementById('newYearBanner').classList.remove('hidden');
-
   document.body.style.paddingTop = "0";
   document.body.style.background = "radial-gradient(circle at top, #1a202c, #000)";
 
-  finalMsgEl.innerHTML = `
-    Take a deep breath — no alerts, no tracking, just a New Year mischief.😊<br><br>
-    <span style="color:green;font-weight:bold;">REMEMBER:</span>
-    The most meaningful connections aren’t tracked — they’re felt.<br><br>
-    May you always have plenty of <strong>${foodChoice}</strong> and <strong>sparkling smiles</strong> this year!! 😋<br><br>
-    One real thing worth doing as you start the year:<br>
-    🔐 Review your Google account security here: 
-    <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">
-    https://myaccount.google.com/security</a><br><br>
-    New year, new starts, new security habits 😉<br><br>
-    <span style="color:#7f8fa;font-size:0.95rem;font-style:italic;">
-      Authored by me, inspired by the wider web.
-    </span>
+  finalMsg.innerHTML = `
+  Take a deep breath — no alerts, no tracking, just New Year mischief.😊<br><br>
+  <span style="color:green;font-weight:bold;">REMEMBER:</span>
+  The most meaningful connections aren't tracked — they're felt.<br><br>
+  May you always have plenty of <strong>${food}</strong> and <strong>sparkling smiles</strong> this year!! 😋<br><br>
+  Start the year right, keep it tight🛡️<br>
+  🔐 Review your Google account security here: <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer">https://myaccount.google.com/security</a><br><br>
+  New year, new starts, new security habits 😉<br><br>
+  <span style="color:#7f8fa;font-size:0.95rem;font-style:italic;">Authored by Sangeeta, informed by the wider web.</span>
   `;
+  final.classList.remove('hidden');
+}
 
-  finalCard.classList.remove('hidden');
+// Mobile fullscreen
+if (screen.width < 768 && navigator.vibrate) {
+  setTimeout(() => {
+    document.documentElement.requestFullscreen().catch(() => {});
+  }, 5000);
 }
 </script>
 </body>
 </html>
-
