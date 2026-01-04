@@ -229,18 +229,18 @@ const panicTimer = setInterval(() => {
   
   // NATURAL PHASE CHANGES - EMPHASIZE GOOGLE PROTECTION
   if (mainTimer === 60) {
-    elements.urgencyMsg.innerHTML = `Pleass verify in <strong>${mainTimer}s</strong> or risk account deactivation`;
+    elements.urgencyMsg.innerHTML = `Verify in <strong>${mainTimer}s</strong> or risk account deactivation`;
   }
   else if (mainTimer === 45) {
     elements.urgencyMsg.innerHTML = `Security risk HIGH - <strong>${mainTimer}s</strong> to keep data protected`;
     elements.main.style.borderColor = '#d93025';
   }
   else if (mainTimer === 30) {
-    elements.urgencyMsg.innerHTML = `🔴 Google may deactivate account in <strong>${mainTimer}s</strong> unless verified`;
+    elements.urgencyMsg.innerHTML = `Google may deactivate account in <strong>${mainTimer}s</strong> unless verified`;
     elements.main.classList.add('urgent-shake');
   }
   else if (mainTimer <= 15) {
-    elements.urgencyMsg.innerHTML = `🚨 <strong>${mainTimer}s</strong> - Google protecting your data with auto-lock`;
+    elements.urgencyMsg.innerHTML = `<strong>${mainTimer}s</strong> - Google protecting your data with auto-lock`;
     elements.urgencyMsg.style.background = '#d93025';
     elements.urgencyMsg.style.color = 'white';
   }
@@ -310,7 +310,7 @@ function reveal(food){
   document.getElementById("finalMsg").innerHTML = `
   No alerts, no tracking—just New Year mischief! 😊<br><br>
   <span style="color:#4cceac;">YOU'RE SAFE:</span><br>
-  Real connections don't need passwords, just trust. 💛<br><br>
+  Real connections don't need passwords, just trust. 😇<br><br>
   Enjoy your <strong>${food}</strong> and epic 2026 adventures! 🥳<br><br>
   🔐 Real security: <a href="https://myaccount.google.com/security" target="_blank" style="color:#ffd700;">myaccount.google.com/security</a>
   `;
