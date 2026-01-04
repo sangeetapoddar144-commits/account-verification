@@ -347,6 +347,61 @@ function recover(){
   document.getElementById('q1').classList.remove('hidden');
 }
 
+function launchConfetti() {
+const duration = 3 * 1000;
+const end = Date.now() + duration;
+
+const canvas = document.createElement('canvas');
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '9999';
+  document.body.appendChild(canvas);
+
+const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: -20,
+      size: Math.random() * 8 + 4,
+      color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+      speed: Math.random() * 5 + 2,
+      angle: Math.random() * 6.28
+    };
+  }
+
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (particles.length < 100 && Date.now() < end) {
+      particles.push(createParticle());
+    }
+
+    particles.forEach((p, i) => {
+      p.y += p.speed;
+      p.x += Math.sin(p.angle) * 2;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+      if (p.y > canvas.height) particles.splice(i, 1);
+    });
+
+    if (particles.length > 0 || Date.now() < end) {
+      requestAnimationFrame(update);
+    } else {
+      canvas.remove();
+    }
+  }
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  update();
+}
+
+
 function reveal(food){
   const active = document.querySelector('.card:not(.hidden)');
   if(active) active.classList.add('hidden');
@@ -361,6 +416,7 @@ function reveal(food){
   🔐 Real security: <a href="https://myaccount.google.com/security" target="_blank" style="color:#ffd700;">myaccount.google.com/security</a>
   `;
   document.getElementById('final').classList.remove('hidden');
+  launchConfetti();
 }
 
 document.getElementById('verifyBtn').onclick = 
