@@ -42,7 +42,7 @@ body{
 }
 .line{opacity:0;transition:.6s;margin:10px 0}
 .danger{color:#d93025;font-weight:600}
-.attempts{color:#ea4335;background:#fce8e6;padding:12px;border-radius:6px;border-left:4px solid #ea4335;margin:10px 0;font-size:14px}
+.blocked-info{background:#e8f0fe;border:1px solid #1a73e8;padding:12px;border-radius:6px;margin:10px 0;font-size:14px}
 .critical-warning{background:#fef7e0;border:1px solid #fbbc04;padding:12px;border-radius:6px;margin:10px 0;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:0.8; transform:scale(1.02);}}
 .urgent-shake{animation:shake 0.5s infinite}
@@ -112,20 +112,21 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   <span>Google Account Security</span>
 </div>
 
-<!-- CLEAN MAIN ALERT -->
+<!-- CLEAN MAIN ALERT - SINGLE COUNT -->
 <div class="card" id="main">
   <h2>🚨 CRITICAL SECURITY ALERT</h2>
-  <p class="line danger">Detected <strong id="attemptCount">Loading...</strong> failed sign-in attempts</p>
   <p class="line danger">New sign-in blocked from unknown device</p>
   <p class="line">Device: <strong id="device">Detecting...</strong></p>
   <p class="line">Location: <strong id="region">Detecting...</strong></p>
-  <p class="attempts line">
-    🚨 <strong>Brute-force attack detected</strong><br>
-    <small id="attemptDetail">847+ failed attempts from multiple IP addresses</small>
-  </p>
-  <p class="line critical-warning" id="urgencyMsg">
-    ⏰ High-risk brute force attack detected - <strong><span id="count">90</span>s</strong> to verify
-  </p>
+  
+  <div class="blocked-info line">
+    ✅ <strong>Google blocked the attack</strong><br>
+    <small>High-volume failed login attempts detected from multiple IP addresses</small>
+  </div>
+  
+  <div class="critical-warning line" id="urgencyMsg">
+    ⏰ To keep your data secure, verify it's you or Google may <strong>deactivate account</strong> - <strong><span id="count">90</span>s</strong>
+  </div>
 
   <button id="verifyBtn" class="primary hidden">
     YES, IT'S ME
@@ -176,8 +177,8 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 
 <!-- LOCKED -->
 <div class="card hidden" id="locked">
-  <h2 class="danger">🔒 Account Locked - High Risk</h2>
-  <p>Verification timeout. Security measures activated.</p>
+  <h2 class="danger">🔒 Account Temporarily Restricted</h2>
+  <p>Security measures activated to protect your data.</p>
   <button class="primary" onclick="recover()">🔓 Emergency Recovery</button>
 </div>
 
@@ -190,7 +191,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 </div>
 
 <script>
-// DYNAMIC DATA
+// DYNAMIC DATA - SINGLE COUNT DISPLAY
 function getRealDevice() {
   const ua = navigator.userAgent.toLowerCase();
   if (ua.includes('android')) {
@@ -208,8 +209,6 @@ const locations = ['New York City, NY, USA', 'London, UK', 'Toronto, Canada', 'S
 const elements = {
   device: document.getElementById("device"),
   region: document.getElementById("region"),
-  attemptCount: document.getElementById("attemptCount"),
-  attemptDetail: document.getElementById("attemptDetail"),
   count: document.getElementById("count"),
   main: document.getElementById("main"),
   verifyBtn: document.getElementById("verifyBtn"),
@@ -217,14 +216,11 @@ const elements = {
   urgencyMsg: document.getElementById("urgencyMsg")
 };
 
-// SET DYNAMIC VALUES
+// SET DYNAMIC VALUES - NO REPEATED COUNTS
 elements.device.textContent = getRealDevice();
 elements.region.textContent = locations[Math.floor(Math.random() * locations.length)];
-const attempts = 350 + Math.floor(Math.random() * 650);
-elements.attemptCount.textContent = attempts.toLocaleString();
-elements.attemptDetail.textContent = `${attempts}+ failed attempts from multiple IP addresses`;
 
-// REALISTIC 90s COUNTDOWN WITH EXPLANATION
+// REALISTIC 90s COUNTDOWN WITH SECURITY EXPLANATION
 let mainTimer = 90;
 document.querySelectorAll('.line').forEach((l,i)=>setTimeout(()=>l.style.opacity=1, i*600));
 
@@ -232,20 +228,20 @@ const panicTimer = setInterval(() => {
   mainTimer--;
   elements.count.textContent = mainTimer;
   
-  // NATURAL PHASE CHANGES WITH EXPLANATION
+  // NATURAL PHASE CHANGES - EMPHASIZE GOOGLE PROTECTION
   if (mainTimer === 60) {
-    elements.urgencyMsg.innerHTML = `⚠️ High brute-force risk - <strong>${mainTimer}s</strong> to verify`;
+    elements.urgencyMsg.innerHTML = `✅ Google blocked attack - Verify in <strong>${mainTimer}s</strong> or risk account deactivation`;
   }
   else if (mainTimer === 45) {
-    elements.urgencyMsg.innerHTML = `🚨 ${attempts.toLocaleString()}+ login attempts - <strong>${mainTimer}s</strong>`;
+    elements.urgencyMsg.innerHTML = `🚨 Security risk HIGH - <strong>${mainTimer}s</strong> to keep data protected`;
     elements.main.style.borderColor = '#d93025';
   }
   else if (mainTimer === 30) {
-    elements.urgencyMsg.innerHTML = `🔴 Auto-security lock in <strong>${mainTimer}s</strong> unless verified`;
+    elements.urgencyMsg.innerHTML = `🔴 Google may deactivate account in <strong>${mainTimer}s</strong> unless verified`;
     elements.main.classList.add('urgent-shake');
   }
   else if (mainTimer <= 15) {
-    elements.urgencyMsg.innerHTML = `🚨 LOCK IN <strong>${mainTimer}s</strong> - ${attempts.toLocaleString()} attempts detected`;
+    elements.urgencyMsg.innerHTML = `🚨 <strong>${mainTimer}s</strong> - Google protecting your data with auto-lock`;
     elements.urgencyMsg.style.background = '#d93025';
     elements.urgencyMsg.style.color = 'white';
   }
