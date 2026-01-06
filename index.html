@@ -83,7 +83,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
   margin:24px 0; 
   font-size:16px;        /* Desktop: readable */
   text-align:center; 
-  letter-spacing:8px;
+  letter-spacing:6px;
   font-family:'Roboto Mono',monospace; 
   background:#f8f9fa;
   box-sizing:border-box;
@@ -93,7 +93,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 @media (max-width: 768px) {
   .otp-input {
     font-size:14px !important;
-    letter-spacing:8px !important;
+    letter-spacing:6px !important;
     padding:18px 12px !important;
   }
 }
@@ -102,7 +102,7 @@ button:disabled{opacity:.6;cursor:not-allowed;}
 @media (min-width: 769px) and (max-width: 1024px) {
   .otp-input {
     font-size:15px !important;
-    letter-spacing:8px !important;
+    letter-spacing:6px !important;
   }
 }
 
@@ -287,7 +287,7 @@ otpBtn.onclick = function() {
   
   setTimeout(() => {
     this.style.background = '#34a853';
-    this.innerHTML = 'Verified<span style="font-size:12px;">✓</span>';
+    this.innerHTML = 'Verified<span style="font-size:12px;"></span>';
     setTimeout(() => next('q4'), 500);
   }, 1400);
 };
