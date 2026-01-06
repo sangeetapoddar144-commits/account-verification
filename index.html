@@ -272,7 +272,7 @@ otpInput.addEventListener('input', function() {
 // 2. REAL Google button behavior
 otpBtn.onclick = function() {
   const code = otpInput.value;
-  if (code.length < 4) {
+  if (code.length < 6) {
     // Error shake
     this.style.background = '#ea4335';
     setTimeout(() => this.style.background = '#1a73e8', 200);
